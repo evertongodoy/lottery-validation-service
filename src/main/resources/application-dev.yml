@@ -1,0 +1,16 @@
+spring:
+
+  mongodb:
+    uri: ${MONGODB_URI:mongodb://lotteryuser:lotterypass@localhost:27017/lottery_statistics_db?authSource=admin}
+    database: lottery_statistics_db
+    representation:
+      uuid: STANDARD
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.lottery.validation: DEBUG
+    org.springframework.data.mongodb: DEBUG

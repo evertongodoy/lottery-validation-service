@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:8.2
+    container_name: lottery-validation-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: lotteryuser
+      MONGO_INITDB_ROOT_PASSWORD: lotterypass
+      MONGO_INITDB_DATABASE: lottery_statistics_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data-lottery-validation:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - lottery-validation-network
+
+volumes:
+  mongodb-data-lottery-validation:
+    driver: local
+
+networks:
+  lottery-validation-network:
+    driver: bridge
