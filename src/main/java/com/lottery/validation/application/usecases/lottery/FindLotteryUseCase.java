@@ -5,7 +5,6 @@ import com.lottery.validation.application.dto.FindLotteryResultDTO;
 import com.lottery.validation.application.ports.input.FindLotteryInputPort;
 import com.lottery.validation.application.ports.output.FindLotteryOutputPort;
 import com.lottery.validation.domain.entities.Lottery;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lottery.validation.application.dto.FindLotteryDTO;
 import com.lottery.validation.application.ports.input.FindLotteryInputPort;
+import com.lottery.validation.application.ports.input.FindTopLotteryInputPort;
 import com.lottery.validation.application.ports.input.SaveLotteryInputPort;
 import com.lottery.validation.domain.enums.LotteryType;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.FindLotteryRestMapper;
@@ -31,17 +32,20 @@ public class LotteryController {
 
     private final SaveLotteryInputPort saveLotteryInputPort;
     private final FindLotteryInputPort findLotteryInputPort;
+    private final FindTopLotteryInputPort findTopLotteryInputPort;
     private final SaveLotteryRestMapper saveLotteryRestMapper;
     private final FindLotteryRestMapper findLotteryRestMapper;
 
-    public LotteryController(SaveLotteryInputPort saveLotteryInputPort, 
+    public LotteryController(SaveLotteryInputPort saveLotteryInputPort,
                            FindLotteryInputPort findLotteryInputPort,
                            SaveLotteryRestMapper saveLotteryRestMapper,
-                           FindLotteryRestMapper findLotteryRestMapper) {
+                           FindLotteryRestMapper findLotteryRestMapper,
+                           FindTopLotteryInputPort findTopLotteryInputPort) {
         this.saveLotteryInputPort = saveLotteryInputPort;
         this.findLotteryInputPort = findLotteryInputPort;
         this.saveLotteryRestMapper = saveLotteryRestMapper;
         this.findLotteryRestMapper = findLotteryRestMapper;
+        this.findTopLotteryInputPort = findTopLotteryInputPort;
     }
 
     @PostMapping("/register")
@@ -67,4 +71,13 @@ public class LotteryController {
         var response = findLotteryRestMapper.toResponse(resultDTO);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/find-top-numbers/lottery-type/{lotteryType}")
+    public String getMethodName(@PathVariable LotteryType lotteryType) {
+       
+        findTopLotteryInputPort.findTopLottery(lotteryType);
+       
+        return new String();
+    }
+    
 }
