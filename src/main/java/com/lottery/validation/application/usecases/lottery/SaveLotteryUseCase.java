@@ -1,6 +1,7 @@
 package com.lottery.validation.application.usecases.lottery;
 
 import com.lottery.validation.application.dto.SaveLotteryDTO;
+import com.lottery.validation.application.dto.SaveLotteryResultDTO;
 import com.lottery.validation.application.ports.input.SaveLotteryInputPort;
 import com.lottery.validation.application.ports.output.SaveLotteryOutputPort;
 import com.lottery.validation.domain.entities.Lottery;
@@ -36,18 +37,18 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
     }
 
     @Override
-    public SaveLotteryResult saveLottery(SaveLotteryDTO saveLotteryDTO) {
-        LotteryType lotteryType = saveLotteryDTO.getLotteryType();
-        String lotteryPath = getLotteryPath(lotteryType);
+    public SaveLotteryResultDTO saveLottery(SaveLotteryDTO saveLotteryDTO) {
+        var lotteryType = saveLotteryDTO.getLotteryType();
+        var lotteryPath = getLotteryPath(lotteryType);
         
         // Buscar o último registro no banco de dados
-        Integer nextDrawNumber = saveLotteryOutputPort
+        var nextDrawNumber = saveLotteryOutputPort
                 .findTopByLotteryTypeOrderByLotteryNumberDesc(lotteryType)
                 .map(Lottery::getNextLotteryNumber)
                 .orElse(1);
         
         // Buscar o ultimo sorteio disponível na API
-        Integer latestDrawNumberFromApi = Optional.ofNullable(webClient.get()
+        var latestDrawNumberFromApi = Optional.ofNullable(webClient.get()
                 .uri("/%s".formatted(lotteryPath))
                 .retrieve()
                 .bodyToMono(MAP_TYPE)
@@ -91,7 +92,7 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
             LockSupport.parkNanos(0_000_000_000L); // 5 segundos em nanosegundos
         }
 
-        return new SaveLotteryResult(processingDate, drawIds, drawIds.size());
+        return new SaveLotteryResultDTO(processingDate, drawIds, drawIds.size());
     }
 
     private Lottery createLotteryFromApiData(Map<String, Object> data, LotteryType lotteryType, LocalDate addAt) {

@@ -1,7 +1,7 @@
 package com.lottery.validation.infrastructure.adapters.input.rest.mappers;
 
 import com.lottery.validation.application.dto.SaveLotteryDTO;
-import com.lottery.validation.application.ports.input.SaveLotteryInputPort.SaveLotteryResult;
+import com.lottery.validation.application.dto.SaveLotteryResultDTO;
 import com.lottery.validation.infrastructure.adapters.input.rest.requests.RegisterLotteryRequest;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.SaveLotteryResponse;
 import org.springframework.stereotype.Component;
@@ -16,10 +16,10 @@ public class SaveLotteryRestMapper {
         return new SaveLotteryDTO(request.getLotteryType());
     }
 
-    public SaveLotteryResponse toResponse(SaveLotteryResult result) {
+    public SaveLotteryResponse toResponse(SaveLotteryResultDTO result) {
         if (result == null) {
             return null;
         }
-        return new SaveLotteryResponse(result.processingDate(), result.drawIds(), result.drawCount());
+        return new SaveLotteryResponse(result.getProcessingDate(), result.getDrawIds(), result.getDrawCount());
     }
 }
