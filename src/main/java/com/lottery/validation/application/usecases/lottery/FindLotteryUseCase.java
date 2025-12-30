@@ -2,6 +2,7 @@ package com.lottery.validation.application.usecases.lottery;
 
 import com.lottery.validation.application.dto.FindLotteryDTO;
 import com.lottery.validation.application.dto.FindLotteryResultDTO;
+import com.lottery.validation.application.dto.LotteryDTO;
 import com.lottery.validation.application.ports.input.FindLotteryInputPort;
 import com.lottery.validation.application.ports.output.FindLotteryOutputPort;
 import com.lottery.validation.domain.entities.Lottery;
@@ -35,7 +36,7 @@ public class FindLotteryUseCase implements FindLotteryInputPort {
         
         return new FindLotteryResultDTO(
             lotteryPage.getContent().stream()
-                .map(this::toLotteryData)
+                .map(this::toLotteryDTO)
                 .collect(Collectors.toList()),
             lotteryPage.getNumber(),
             lotteryPage.getSize(),
@@ -45,8 +46,8 @@ public class FindLotteryUseCase implements FindLotteryInputPort {
         );
     }
     
-    private FindLotteryResultDTO.LotteryData toLotteryData(Lottery lottery) {
-        return new FindLotteryResultDTO.LotteryData(
+    private LotteryDTO toLotteryDTO(Lottery lottery) {
+        return new LotteryDTO(
             lottery.getId(),
             lottery.getLotteryNumber(),
             lottery.getNextLotteryNumber(),

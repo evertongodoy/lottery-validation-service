@@ -16,9 +16,11 @@ import com.lottery.validation.application.ports.input.FindTopLotteryInputPort;
 import com.lottery.validation.application.ports.input.SaveLotteryInputPort;
 import com.lottery.validation.domain.enums.LotteryType;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.FindLotteryRestMapper;
+import com.lottery.validation.infrastructure.adapters.input.rest.mappers.FindTopLotteryRestMapper;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.SaveLotteryRestMapper;
 import com.lottery.validation.infrastructure.adapters.input.rest.requests.RegisterLotteryRequest;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.FindLotteryResponse;
+import com.lottery.validation.infrastructure.adapters.input.rest.responses.FindTopLotteryResponse;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.SaveLotteryResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,17 +37,20 @@ public class LotteryController {
     private final FindTopLotteryInputPort findTopLotteryInputPort;
     private final SaveLotteryRestMapper saveLotteryRestMapper;
     private final FindLotteryRestMapper findLotteryRestMapper;
+    private final FindTopLotteryRestMapper findTopLotteryRestMapper;
 
     public LotteryController(SaveLotteryInputPort saveLotteryInputPort,
                            FindLotteryInputPort findLotteryInputPort,
                            SaveLotteryRestMapper saveLotteryRestMapper,
                            FindLotteryRestMapper findLotteryRestMapper,
-                           FindTopLotteryInputPort findTopLotteryInputPort) {
+                           FindTopLotteryInputPort findTopLotteryInputPort,
+                           FindTopLotteryRestMapper findTopLotteryRestMapper) {
         this.saveLotteryInputPort = saveLotteryInputPort;
         this.findLotteryInputPort = findLotteryInputPort;
         this.saveLotteryRestMapper = saveLotteryRestMapper;
         this.findLotteryRestMapper = findLotteryRestMapper;
         this.findTopLotteryInputPort = findTopLotteryInputPort;
+        this.findTopLotteryRestMapper = findTopLotteryRestMapper;
     }
 
     @PostMapping("/register")
@@ -73,11 +78,11 @@ public class LotteryController {
     }
 
     @GetMapping("/find-top-numbers/lottery-type/{lotteryType}")
-    public String getMethodName(@PathVariable LotteryType lotteryType) {
-       
-        findTopLotteryInputPort.findTopLottery(lotteryType);
-       
-        return new String();
+    @Operation(summary = "Find top frequent lottery numbers", description = "Retrieves the most frequently drawn lottery numbers for a given lottery type")
+    public ResponseEntity<FindTopLotteryResponse> getMethodName(@PathVariable LotteryType lotteryType) {
+        var findTopFrequencyDTO = findTopLotteryInputPort.findTopLottery(lotteryType);
+        var response = findTopLotteryRestMapper.toResponse(findTopFrequencyDTO);;   
+        return ResponseEntity.ok(response);
     }
     
 }

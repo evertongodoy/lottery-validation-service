@@ -1,6 +1,7 @@
 package com.lottery.validation.infrastructure.adapters.input.rest.mappers;
 
 import com.lottery.validation.application.dto.FindLotteryResultDTO;
+import com.lottery.validation.application.dto.LotteryDTO;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.FindLotteryResponse;
 import org.springframework.stereotype.Component;
 
@@ -28,17 +29,17 @@ public class FindLotteryRestMapper {
         );
     }
     
-    private FindLotteryResponse.LotteryData toLotteryDataResponse(FindLotteryResultDTO.LotteryData data) {
+    private FindLotteryResponse.LotteryData toLotteryDataResponse(LotteryDTO dto) {
         var response = new FindLotteryResponse.LotteryData();
-        response.setId(data.getId());
-        response.setLotteryNumber(data.getLotteryNumber());
-        response.setNextLotteryNumber(data.getNextLotteryNumber());
-        response.setAddAt(data.getAddAt());
-        response.setDrawDate(data.getDrawDate());
-        response.setDrawnNumbers(data.getDrawnNumbers());
-        response.setSortedDrawNumbers(data.getSortedDrawNumbers());
-        response.setCity(data.getCity());
-        response.setLotteryType(data.getLotteryType());
+        response.setId(dto.getId());
+        response.setLotteryNumber(dto.getLotteryNumber());
+        response.setNextLotteryNumber(dto.getNextLotteryNumber());
+        response.setAddAt(dto.getAddAt());
+        response.setDrawDate(dto.getDrawDate());
+        response.setDrawnNumbers(dto.getDrawnNumbers());
+        response.setSortedDrawNumbers(dto.getSortedDrawNumbers());
+        response.setCity(dto.getCity());
+        response.setLotteryType(dto.getLotteryType());
         return response;
     }
 }

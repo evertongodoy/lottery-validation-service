@@ -7,8 +7,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
-public interface FindLotteryMongoRepository extends MongoRepository<LotteryEntity, String> {
+public interface LotteryMongoRepository extends MongoRepository<LotteryEntity, String> {
     
     Page<LotteryEntity> findByLotteryType(LotteryType lotteryType, Pageable pageable);
+    
+    Optional<LotteryEntity> findTopByLotteryTypeOrderByLotteryNumberDesc(LotteryType lotteryType);
+    
+    List<LotteryEntity> findAllByLotteryType(LotteryType lotteryType);
+    
 }
