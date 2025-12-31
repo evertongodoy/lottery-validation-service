@@ -1,15 +1,12 @@
 package com.lottery.validation.application.usecases.lottery;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.lottery.validation.application.dto.FindTopFrequencyDTO;
-import com.lottery.validation.application.dto.LotteryDTO;
 import com.lottery.validation.application.dto.NumbersRankDTO;
 import com.lottery.validation.application.ports.input.FindTopLotteryInputPort;
 import com.lottery.validation.application.ports.output.FindTopLotteryOutputPort;

@@ -1,11 +1,14 @@
 package com.lottery.validation.infrastructure.adapters.input.rest.controllers;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +17,7 @@ import com.lottery.validation.application.dto.FindLotteryDTO;
 import com.lottery.validation.application.ports.input.FindLotteryInputPort;
 import com.lottery.validation.application.ports.input.FindTopLotteryInputPort;
 import com.lottery.validation.application.ports.input.SaveLotteryInputPort;
+import com.lottery.validation.application.ports.input.SimulateLotteryDrawInputPort;
 import com.lottery.validation.domain.enums.LotteryType;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.FindLotteryRestMapper;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.FindTopLotteryRestMapper;
@@ -22,6 +26,7 @@ import com.lottery.validation.infrastructure.adapters.input.rest.requests.Regist
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.FindLotteryResponse;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.FindTopLotteryResponse;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.SaveLotteryResponse;
+import com.lottery.validation.infrastructure.adapters.input.rest.responses.SimulateLotteryDrawResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,6 +40,7 @@ public class LotteryController {
     private final SaveLotteryInputPort saveLotteryInputPort;
     private final FindLotteryInputPort findLotteryInputPort;
     private final FindTopLotteryInputPort findTopLotteryInputPort;
+    private final SimulateLotteryDrawInputPort simulateLotteryDrawInputPort;
     private final SaveLotteryRestMapper saveLotteryRestMapper;
     private final FindLotteryRestMapper findLotteryRestMapper;
     private final FindTopLotteryRestMapper findTopLotteryRestMapper;
@@ -44,13 +50,15 @@ public class LotteryController {
                            SaveLotteryRestMapper saveLotteryRestMapper,
                            FindLotteryRestMapper findLotteryRestMapper,
                            FindTopLotteryInputPort findTopLotteryInputPort,
-                           FindTopLotteryRestMapper findTopLotteryRestMapper) {
+                           FindTopLotteryRestMapper findTopLotteryRestMapper,
+                           SimulateLotteryDrawInputPort simulateLotteryDrawInputPort) {
         this.saveLotteryInputPort = saveLotteryInputPort;
         this.findLotteryInputPort = findLotteryInputPort;
         this.saveLotteryRestMapper = saveLotteryRestMapper;
         this.findLotteryRestMapper = findLotteryRestMapper;
         this.findTopLotteryInputPort = findTopLotteryInputPort;
         this.findTopLotteryRestMapper = findTopLotteryRestMapper;
+        this.simulateLotteryDrawInputPort = simulateLotteryDrawInputPort;
     }
 
     @PostMapping("/register")
@@ -82,6 +90,30 @@ public class LotteryController {
     public ResponseEntity<FindTopLotteryResponse> getMethodName(@PathVariable LotteryType lotteryType) {
         var findTopFrequencyDTO = findTopLotteryInputPort.findTopLottery(lotteryType);
         var response = findTopLotteryRestMapper.toResponse(findTopFrequencyDTO);;   
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/simulate-lottery/lottery-type/{lotteryType}")
+    @Operation(summary = "Simulate lottery draw", description = "Simulates a lottery draw by checking numbers against historical draws")
+    public ResponseEntity<SimulateLotteryDrawResponse> simulateLotteryDraw(
+            @PathVariable LotteryType lotteryType,
+            @RequestHeader("X-Lottery-Numbers") List<Integer> numbers) {
+        var simulateDTO = simulateLotteryDrawInputPort.simulateLotteryDraw(lotteryType, numbers);
+        
+        // Mapear os matches do DTO para a resposta
+        var matches = simulateDTO.getMatches().stream()
+                .map(match -> new SimulateLotteryDrawResponse.LotteryMatch(
+                        match.getLotteryNumber(),
+                        match.getDrawDate(),
+                        match.getTotalMatches(),
+                        match.getDrawNumbers()
+                ))
+                .collect(java.util.stream.Collectors.toList());
+        
+        var response = new SimulateLotteryDrawResponse(
+                simulateDTO.getLotteryType(),
+                matches
+        );
         return ResponseEntity.ok(response);
     }
     
