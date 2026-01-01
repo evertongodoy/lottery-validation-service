@@ -8,16 +8,19 @@ import com.lottery.validation.application.ports.input.FindLotteryInputPort;
 import com.lottery.validation.application.ports.input.FindTopLotteryInputPort;
 import com.lottery.validation.application.ports.input.SaveLotteryInputPort;
 import com.lottery.validation.application.ports.input.SimulateLotteryDrawInputPort;
+import com.lottery.validation.application.ports.input.UserDrawInputPort;
 import com.lottery.validation.application.ports.input.UserInputPort;
 import com.lottery.validation.application.ports.output.FindLotteryOutputPort;
 import com.lottery.validation.application.ports.output.FindTopLotteryOutputPort;
 import com.lottery.validation.application.ports.output.SaveLotteryOutputPort;
 import com.lottery.validation.application.ports.output.SimulateLotteryDrawOutputPort;
+import com.lottery.validation.application.ports.output.UserDrawOutputPort;
 import com.lottery.validation.application.ports.output.UserOutputPort;
 import com.lottery.validation.application.usecases.lottery.FindLotteryUseCase;
 import com.lottery.validation.application.usecases.lottery.FindTopLotteryUseCase;
 import com.lottery.validation.application.usecases.lottery.SaveLotteryUseCase;
 import com.lottery.validation.application.usecases.lottery.SimulateLotteryDrawUseCase;
+import com.lottery.validation.application.usecases.user.UserDrawUseCase;
 import com.lottery.validation.application.usecases.user.UserUseCase;
 
 @Configuration
@@ -26,6 +29,11 @@ public class BeanConfiguration {
     @Bean
     public UserInputPort createUserInputPort(UserOutputPort userOutputPort) {
         return new UserUseCase(userOutputPort);
+    }
+
+    @Bean
+    public UserDrawInputPort userDrawInputPort(UserDrawOutputPort userDrawOutputPort, UserOutputPort userOutputPort) {
+        return new UserDrawUseCase(userDrawOutputPort, userOutputPort);
     }
 
     @Bean

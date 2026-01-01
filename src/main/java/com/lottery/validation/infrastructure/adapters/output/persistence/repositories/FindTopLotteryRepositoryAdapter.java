@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import com.lottery.validation.application.ports.output.FindTopLotteryOutputPort;
 import com.lottery.validation.domain.entities.Lottery;
 import com.lottery.validation.domain.enums.LotteryType;
-import com.lottery.validation.infrastructure.adapters.output.persistence.entities.LotteryEntity;
 import com.lottery.validation.infrastructure.adapters.output.persistence.mongodb.LotteryMongoRepository;
 
 @Component

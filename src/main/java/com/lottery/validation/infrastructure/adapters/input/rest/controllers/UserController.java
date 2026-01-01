@@ -9,9 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lottery.validation.application.ports.input.UserDrawInputPort;
 import com.lottery.validation.application.ports.input.UserInputPort;
+import com.lottery.validation.infrastructure.adapters.input.rest.mappers.UserDrawRestMapper;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.UserRestMapper;
+import com.lottery.validation.infrastructure.adapters.input.rest.requests.CreateUserDrawRequest;
 import com.lottery.validation.infrastructure.adapters.input.rest.requests.CreateUserRequest;
+import com.lottery.validation.infrastructure.adapters.input.rest.responses.UserDrawResponse;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.UserResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,10 +29,17 @@ public class UserController {
 
     private final UserInputPort userInputPort;
     private final UserRestMapper userRestMapper;
+    private final UserDrawInputPort userDrawInputPort;
+    private final UserDrawRestMapper userDrawRestMapper;
 
-    public UserController(UserInputPort createUserInputPort, UserRestMapper userRestMapper) {
+    public UserController(UserInputPort createUserInputPort, 
+                          UserRestMapper userRestMapper,
+                          UserDrawInputPort userDrawInputPort,
+                          UserDrawRestMapper userDrawRestMapper) {
         this.userInputPort = createUserInputPort;
         this.userRestMapper = userRestMapper;
+        this.userDrawInputPort = userDrawInputPort;
+        this.userDrawRestMapper = userDrawRestMapper;
     }
 
     @PostMapping
@@ -44,5 +55,14 @@ public class UserController {
     @Operation(summary = "Get user by subject", description = "Retrieves a user by their subject identifier")
     public ResponseEntity<String> getUserBySubject(@PathVariable String subject) {
         return ResponseEntity.ok(subject); 
+    }
+
+    @PostMapping("/create-my-draw")
+    @Operation(summary = "Create user draw", description = "Creates a new lottery draw for a user")
+    public ResponseEntity<UserDrawResponse> createUserDraw(@Valid @RequestBody CreateUserDrawRequest request) {
+        var userDrawDTO = userDrawRestMapper.toDTO(request);
+        var createdUserDraw = userDrawInputPort.createUserDraw(userDrawDTO);
+        var response = userDrawRestMapper.toResponse(createdUserDraw);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
