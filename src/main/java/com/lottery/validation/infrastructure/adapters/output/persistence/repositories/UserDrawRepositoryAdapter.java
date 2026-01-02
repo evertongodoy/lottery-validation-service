@@ -1,5 +1,9 @@
 package com.lottery.validation.infrastructure.adapters.output.persistence.repositories;
 
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Component;
 
 import com.lottery.validation.application.ports.output.UserDrawOutputPort;
@@ -24,5 +28,13 @@ public class UserDrawRepositoryAdapter implements UserDrawOutputPort {
         var entity = userDrawPersistenceMapper.toEntity(userDraw);
         var savedEntity = userDrawMongoRepository.save(entity);
         return userDrawPersistenceMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public List<UserDraw> findByUuidSubject(UUID uuidSubject) {
+        return userDrawMongoRepository.findByUuidSubject(uuidSubject)
+                .stream()
+                .map(userDrawPersistenceMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }
