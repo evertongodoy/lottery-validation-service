@@ -18,15 +18,18 @@ import com.lottery.validation.application.ports.input.FindLotteryInputPort;
 import com.lottery.validation.application.ports.input.FindTopLotteryInputPort;
 import com.lottery.validation.application.ports.input.SaveLotteryInputPort;
 import com.lottery.validation.application.ports.input.SimulateLotteryDrawInputPort;
+import com.lottery.validation.application.ports.input.VerifyUserDrawInputPort;
 import com.lottery.validation.domain.enums.LotteryType;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.FindLotteryRestMapper;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.FindTopLotteryRestMapper;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.SaveLotteryRestMapper;
+import com.lottery.validation.infrastructure.adapters.input.rest.mappers.VerifyUserDrawWinnerRestMapper;
 import com.lottery.validation.infrastructure.adapters.input.rest.requests.RegisterLotteryRequest;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.FindLotteryResponse;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.FindTopLotteryResponse;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.SaveLotteryResponse;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.SimulateLotteryDrawResponse;
+import com.lottery.validation.infrastructure.adapters.input.rest.responses.VerifyUserDrawWinnerResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,9 +44,11 @@ public class LotteryController {
     private final FindLotteryInputPort findLotteryInputPort;
     private final FindTopLotteryInputPort findTopLotteryInputPort;
     private final SimulateLotteryDrawInputPort simulateLotteryDrawInputPort;
+    private final VerifyUserDrawInputPort verifyUserDrawInputPort;
     private final SaveLotteryRestMapper saveLotteryRestMapper;
     private final FindLotteryRestMapper findLotteryRestMapper;
     private final FindTopLotteryRestMapper findTopLotteryRestMapper;
+    private final VerifyUserDrawWinnerRestMapper verifyUserDrawWinnerRestMapper;
 
     public LotteryController(SaveLotteryInputPort saveLotteryInputPort,
                            FindLotteryInputPort findLotteryInputPort,
@@ -51,7 +56,9 @@ public class LotteryController {
                            FindLotteryRestMapper findLotteryRestMapper,
                            FindTopLotteryInputPort findTopLotteryInputPort,
                            FindTopLotteryRestMapper findTopLotteryRestMapper,
-                           SimulateLotteryDrawInputPort simulateLotteryDrawInputPort) {
+                           SimulateLotteryDrawInputPort simulateLotteryDrawInputPort,
+                           VerifyUserDrawInputPort verifyUserDrawInputPort,
+                           VerifyUserDrawWinnerRestMapper verifyUserDrawWinnerRestMapper) {
         this.saveLotteryInputPort = saveLotteryInputPort;
         this.findLotteryInputPort = findLotteryInputPort;
         this.saveLotteryRestMapper = saveLotteryRestMapper;
@@ -59,6 +66,8 @@ public class LotteryController {
         this.findTopLotteryInputPort = findTopLotteryInputPort;
         this.findTopLotteryRestMapper = findTopLotteryRestMapper;
         this.simulateLotteryDrawInputPort = simulateLotteryDrawInputPort;
+        this.verifyUserDrawInputPort = verifyUserDrawInputPort;
+        this.verifyUserDrawWinnerRestMapper = verifyUserDrawWinnerRestMapper;
     }
 
     @PostMapping("/register")
@@ -114,6 +123,14 @@ public class LotteryController {
                 simulateDTO.getLotteryType(),
                 matches
         );
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/verify-user-draws/lottery-type/{lotteryType}")
+    @Operation(summary = "Verify user draws", description = "Verifies all active user draws against the latest lottery draw from web")
+    public ResponseEntity<VerifyUserDrawWinnerResponse> verifyUserDraws(@PathVariable LotteryType lotteryType) {
+        var winnersDTO = verifyUserDrawInputPort.verifyUserDraws(lotteryType);
+        var response = verifyUserDrawWinnerRestMapper.toResponse(winnersDTO);
         return ResponseEntity.ok(response);
     }
     
