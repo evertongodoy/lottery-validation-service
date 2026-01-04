@@ -8,6 +8,7 @@ import com.lottery.validation.infrastructure.adapters.output.persistence.mappers
 import com.lottery.validation.infrastructure.adapters.output.persistence.mongodb.UserMongoRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class UserRepositoryAdapter implements UserOutputPort {
@@ -30,6 +31,12 @@ public class UserRepositoryAdapter implements UserOutputPort {
     @Override
     public Optional<User> findBySubject(String subject) {
         return userMongoRepository.findBySubject(subject)
+                .map(userPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Optional<User> findByUuid(UUID uuid) {
+        return userMongoRepository.findByUuid(uuid)
                 .map(userPersistenceMapper::toDomain);
     }
 
