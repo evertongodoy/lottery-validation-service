@@ -142,7 +142,7 @@ public class LotteryController {
     @Operation(summary = "Send message to winners", description = "Sends messages to all verified winners of today for the specified lottery type")
     public ResponseEntity<String> sendMessageWinners(@PathVariable LotteryType lotteryType) {
         sendVerifiedUserDrawInputPort.sendVerifiedWinnerDraw(lotteryType);
-        return ResponseEntity.ok("Enviados ok");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Messages sent to verified winners successfully.");
     }
-    
+
 }

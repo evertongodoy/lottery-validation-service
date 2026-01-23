@@ -6,17 +6,26 @@ import com.lottery.validation.application.ports.output.UserOutputPort;
 import com.lottery.validation.domain.entities.UserDraw;
 import com.lottery.validation.domain.entities.Winners;
 import com.lottery.validation.domain.enums.LotteryType;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.Map;
 
 // Nao precisa do @Service porque a classe ja e criada no BeanConfiguration
 public class SendVerifiedUserDrawUseCase implements SendVerifiedUserDrawInputPort {
 
+    private static final String WHATSAPP_API_URL = "https://evolution-evolution-api.kdzex0.easypanel.host";
+    private static final String API_KEY = "429683C4C977415CAAFCCE10F7D57E11";
+
     private final SendVerifiedUserDrawOutputPort sendVerifiedUserDrawOutputPort;
     private final UserOutputPort userOutputPort;
+    private final WebClient webClient;
 
     public SendVerifiedUserDrawUseCase(SendVerifiedUserDrawOutputPort sendVerifiedUserDrawOutputPort,
-                                      UserOutputPort userOutputPort) {
+                                      UserOutputPort userOutputPort,
+                                      WebClient.Builder webClientBuilder) {
         this.sendVerifiedUserDrawOutputPort = sendVerifiedUserDrawOutputPort;
         this.userOutputPort = userOutputPort;
+        this.webClient = webClientBuilder.baseUrl(WHATSAPP_API_URL).build();
     }
 
     @Override
@@ -31,30 +40,36 @@ public class SendVerifiedUserDrawUseCase implements SendVerifiedUserDrawInputPor
             UserDraw userDraw = sendVerifiedUserDrawOutputPort.findUserDrawByUuid(winner.getUuidDraw());
             
             // Buscar o usuário pelo uuidSubject (UUID)
-            var userOptional = userOutputPort.findByUuid(userDraw.getUuidSubject());
-            
-            if (userOptional.isPresent()) {
-                var user = userOptional.get();
-                
-                // Log completo com todas as informações
-                System.out.println("\n>>> GANHADOR ENCONTRADO <<<");
-                System.out.println("UUID Draw: " + winner.getUuidDraw());
-                System.out.println("Tipo Loteria: " + winner.getLotteryType());
-                System.out.println("Número Sorteio: " + winner.getLotteryNumber());
-                System.out.println("Números Jogados: " + winner.getDrawNumbers());
-                System.out.println("Total de Acertos: " + winner.getTotalMatches());
-                System.out.println("Números Acertados: " + winner.getNumbersMatched());
-                System.out.println("Verificado em: " + winner.getVerifiedAt());
-                System.out.println("--- Dados do Usuário ---");
-                System.out.println("Nome: " + user.getName());
-                System.out.println("Celular: " + user.getCellphone());
-                System.out.println("Subject: " + user.getSubject());
-                System.out.println("========================\n");
-            } else {
-                System.out.println("ATENÇÃO: Usuário não encontrado para o UUID: " + userDraw.getUuidSubject());
+            var user = userOutputPort.findByUuid(userDraw.getUuidSubject())
+                .orElseThrow(() -> new RuntimeException("Usuario não encontrado para o UUID: " + userDraw.getUuidSubject()));
+        
+            var textMessage = String.format(
+                "Parabéns %s! Você é um dos ganhadores do sorteio %d da loteria %s com %d acertos! Números acertados: %s",
+                user.getName(),
+                winner.getLotteryNumber(),
+                winner.getLotteryType().name(),
+                winner.getTotalMatches(),
+                winner.getNumbersMatched().toString()
+            );
+
+            try {
+                var requestBody = Map.of(
+                    "number", "55".concat(user.getCellphone()),
+                    "text", textMessage,
+                    "delay", 2000
+                );
+
+                webClient.post()
+                    .uri("/message/sendText/teste2")
+                    .header("apikey", API_KEY)
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            } catch (Exception e) {
+                System.err.println("Erro ao enviar mensagem WhatsApp: " + e.getMessage());
             }
         }
-        
-        System.out.println("=== Envio de mensagens concluído ===");
     }
 }
