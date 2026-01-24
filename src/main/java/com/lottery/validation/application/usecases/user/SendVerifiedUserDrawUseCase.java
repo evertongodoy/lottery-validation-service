@@ -44,7 +44,7 @@ public class SendVerifiedUserDrawUseCase implements SendVerifiedUserDrawInputPor
                 .orElseThrow(() -> new RuntimeException("Usuario não encontrado para o UUID: " + userDraw.getUuidSubject()));
         
             var textMessage = String.format(
-                "Parabéns %s! Você é um dos ganhadores do sorteio %d da loteria %s com %d acertos! Números acertados: %s",
+                "🤑 Parabéns *%s*! Você está entre os ganhadores do sorteio *%d* da loteria *%s* com *%d* acertos 🎯! Números acertados: *%s* 💰",
                 user.getName(),
                 winner.getLotteryNumber(),
                 winner.getLotteryType().name(),
