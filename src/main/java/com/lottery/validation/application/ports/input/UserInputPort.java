@@ -6,4 +6,6 @@ public interface UserInputPort {
 
     UserDTO createUser(UserDTO userDTO);
 
+    UserDTO getSubjectData(String subject);
+
 }

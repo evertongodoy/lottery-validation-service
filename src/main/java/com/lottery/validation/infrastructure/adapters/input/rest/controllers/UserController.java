@@ -67,11 +67,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/{subject}")
+    @GetMapping("/subject/{subject}")
     @Operation(summary = "Get user by subject", description = "Retrieves a user by their subject identifier")
-    public ResponseEntity<String> getUserBySubject(@PathVariable String subject) {
+    public ResponseEntity<UserResponse> getUserBySubject(@PathVariable String subject) {
         log.info("[getUserBySubject] Início - PathVariable: subject={}", subject);
-        return ResponseEntity.ok(subject); 
+        var userDTO = userInputPort.getSubjectData(subject);
+        var response = userRestMapper.toResponse(userDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PostMapping("/create-my-draw")

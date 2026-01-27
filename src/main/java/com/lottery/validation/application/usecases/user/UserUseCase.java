@@ -47,4 +47,21 @@ public class UserUseCase implements UserInputPort {
             savedUser.getCreatedAt()
         );
     }
+
+    @Override
+    public UserDTO getSubjectData(String subject) {
+        // Buscar usuário pelo subject
+        var user = userOutputPort.findBySubject(subject)
+                .orElseThrow(() -> new RuntimeException("Subject informado nao existe"));
+
+        // Retornar DTO
+        return new UserDTO(
+            user.getUuid(),
+            user.getName(),
+            user.getRole(),
+            user.getSubject(),
+            user.getCellphone(),
+            user.getCreatedAt()
+        );
+    }
 }
