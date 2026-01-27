@@ -1,28 +1,28 @@
 spring:
   application:
     name: lottery-validation-service
-  
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE}
+
+server:
+  port: ${SERVER_PORT}
+  servlet:
+    # context-path: /lottery-validation
+    context-path: /  
+
+#profiles:
+ #   active: ${SPRING_PROFILES_ACTIVE}
   
   # No Spring Boot 4 nao tem mais o prefix spring.data.mongodb, comeca ser spring.mongodb
-  mongodb:
-    uri: ${MONGODB_URI_PROD}:${MONGO_PORT}/${DATABASE_NAME}?authSource=${MONGO_AUTH_DB}
-    database: ${DATABASE_NAME}
-    representation:
-      uuid: STANDARD
+ # mongodb:
+ #   uri: ${MONGODB_URI_PROD}:${MONGO_PORT}/${DATABASE_NAME}?authSource=${MONGO_AUTH_DB}
+ #   database: ${DATABASE_NAME}
+ #   representation:
+ #     uuid: STANDARD
 
 # No Jackson 3, o comportamento padrão já é ISO-8601, ou seja: "2025-12-17T00:10:30"  
   # jackson:
   #   serialization:
   #     write-dates-as-timestamps: false
   #   time-zone: UTC
-
-server:
-  port: ${SERVER_PORT}
-  servlet:
-    # context-path: /lottery-validation
-    context-path: /
 
 springdoc:
   api-docs:

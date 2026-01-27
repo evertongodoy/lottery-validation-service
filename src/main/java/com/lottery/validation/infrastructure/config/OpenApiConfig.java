@@ -14,7 +14,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Lottery Validation Service API")
+                        .title("Lottery Validation MicroService")
                         .version("1.0.0")
                         .description("Microservice for lottery validation and user management")
                         .contact(new Contact()

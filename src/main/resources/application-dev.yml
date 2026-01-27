@@ -1,7 +1,7 @@
 spring:
 
   mongodb:
-    uri: ${MONGODB_URI_DEV}:${MONGO_PORT}/${DATABASE_NAME}?authSource=${MONGO_AUTH_DB}
+    uri: mongodb://${MONGO_USER_DB}:${MONGO_PASS_DB}@${MONGO_ADDRESS_DB}:${MONGO_PORT}?authSource=${MONGO_AUTH_DB}
     database: ${DATABASE_NAME}
     representation:
-      uuid: STANDARD
+      uuid: STANDARD # This is to avoid issues with UUID representation between different drivers

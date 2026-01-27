@@ -27,17 +27,17 @@ O projeto segue os princípios SOLID:
 
 ## Tecnologias
 
-- Java 17
-- Spring Boot 3.2.1
+- Java 21
+- Spring Boot 4.0.0
 - Spring Data MongoDB
 - SpringDoc OpenAPI (Swagger)
-- MongoDB 7.0
+- MongoDB 8.2
 - Docker & Docker Compose
 - Maven
 
 ## Pré-requisitos
 
-- Java 17 ou superior
+- Java 21 ou superior
 - Maven 3.6+
 - Docker e Docker Compose
 
