@@ -28,7 +28,9 @@ import com.lottery.validation.infrastructure.adapters.input.rest.responses.UserR
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/users")
 @Tag(name = "Users", description = "User management endpoints")
@@ -58,6 +60,7 @@ public class UserController {
     @PostMapping
     @Operation(summary = "Create a new user", description = "Creates a new user in the lottery validation system")
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
+        log.info("[createUser] Início - Request Body: {}", request);
         var userDTO = userRestMapper.toDTO(request);
         var createdUser = userInputPort.createUser(userDTO);
         var response = userRestMapper.toResponse(createdUser);
@@ -67,12 +70,14 @@ public class UserController {
     @GetMapping("/{subject}")
     @Operation(summary = "Get user by subject", description = "Retrieves a user by their subject identifier")
     public ResponseEntity<String> getUserBySubject(@PathVariable String subject) {
+        log.info("[getUserBySubject] Início - PathVariable: subject={}", subject);
         return ResponseEntity.ok(subject); 
     }
 
     @PostMapping("/create-my-draw")
     @Operation(summary = "Create user draw", description = "Creates a new lottery draw for a user")
     public ResponseEntity<UserDrawResponse> createUserDraw(@Valid @RequestBody CreateUserDrawRequest request) {
+        log.info("[createUserDraw] Início - Request Body: {}", request);
         var userDrawDTO = userDrawRestMapper.toDTO(request);
         var createdUserDraw = userDrawInputPort.createUserDraw(userDrawDTO);
         var response = userDrawRestMapper.toResponse(createdUserDraw);
@@ -88,6 +93,8 @@ public class UserController {
             @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestParam(value = "orderBy", defaultValue = "addAt") String orderBy,
             @RequestParam(value = "direction", defaultValue = "DESC") String direction) {
+        log.info("[findMyDraw] Início - PathVariable: lotteryType={} | Header X-Subject: {} | Params: page={}, size={}, orderBy={}, direction={}", 
+                lotteryType, subject, page, size, orderBy, direction);
         FindMyDrawRequestDTO findMyDrawRequestDTO = new FindMyDrawRequestDTO(lotteryType, page, size, orderBy, direction, subject);
         var resultDTO = findMyDrawInputPort.findMyDraw(findMyDrawRequestDTO);
         var response = findMyDrawRestMapper.toResponse(resultDTO);

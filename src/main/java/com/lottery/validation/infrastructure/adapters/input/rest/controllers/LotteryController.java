@@ -35,7 +35,9 @@ import com.lottery.validation.infrastructure.adapters.input.rest.responses.Verif
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/lottery")
 @Tag(name = "Lottery", description = "Lottery management endpoints")
@@ -77,6 +79,7 @@ public class LotteryController {
     @PostMapping("/register")
     @Operation(summary = "Register lottery draws", description = "Fetches and registers lottery draws from external API")
     public ResponseEntity<SaveLotteryResponse> registerLottery(@Valid @RequestBody RegisterLotteryRequest request) {
+        log.info("[registerLottery] Início | Request Body: {}", request);
         var saveLotteryDTO = saveLotteryRestMapper.toDTO(request);
         var result = saveLotteryInputPort.saveLottery(saveLotteryDTO);
         var response = saveLotteryRestMapper.toResponse(result);
@@ -91,6 +94,8 @@ public class LotteryController {
             @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestParam(value = "orderBy", defaultValue = "lotteryNumber") String orderBy,
             @RequestParam(value = "direction", defaultValue = "ASC") String direction) {
+        log.info("[findLotteries] Início | Params: page={}, size={}, orderBy={}, direction={}", 
+                lotteryType, page, size, orderBy, direction);
         
         FindLotteryDTO findLotteryDTO = new FindLotteryDTO(lotteryType, page, size, orderBy, direction);
         var resultDTO = findLotteryInputPort.findLottery(findLotteryDTO);
@@ -101,6 +106,8 @@ public class LotteryController {
     @GetMapping("/find-top-numbers/lottery-type/{lotteryType}")
     @Operation(summary = "Find top frequent lottery numbers", description = "Retrieves the most frequently drawn lottery numbers for a given lottery type")
     public ResponseEntity<FindTopLotteryResponse> getMethodName(@PathVariable LotteryType lotteryType) {
+        log.info("[getMethodName] Início | PathVariable: lotteryType={}", 
+                lotteryType, lotteryType);
         var findTopFrequencyDTO = findTopLotteryInputPort.findTopLottery(lotteryType);
         var response = findTopLotteryRestMapper.toResponse(findTopFrequencyDTO);;   
         return ResponseEntity.ok(response);
@@ -111,6 +118,8 @@ public class LotteryController {
     public ResponseEntity<SimulateLotteryDrawResponse> simulateLotteryDraw(
             @PathVariable LotteryType lotteryType,
             @RequestHeader("X-Lottery-Numbers") List<Integer> numbers) {
+        log.info("[simulateLotteryDraw] Início | PathVariable: lotteryType={} | Header X-Lottery-Numbers: {}", 
+                lotteryType, lotteryType, numbers);
         var simulateDTO = simulateLotteryDrawInputPort.simulateLotteryDraw(lotteryType, numbers);
         
         // Mapear os matches do DTO para a resposta
@@ -133,6 +142,8 @@ public class LotteryController {
     @GetMapping("/verify-user-draws/lottery-type/{lotteryType}")
     @Operation(summary = "Verify user draws", description = "Verifies all active user draws against the latest lottery draw from web")
     public ResponseEntity<VerifyUserDrawWinnerResponse> verifyUserDraws(@PathVariable LotteryType lotteryType) {
+        log.info("[verifyUserDraws] Início | PathVariable: lotteryType={}", 
+                lotteryType, lotteryType);
         var winnersDTO = verifyUserDrawInputPort.verifyUserDraws(lotteryType);
         var response = verifyUserDrawWinnerRestMapper.toResponse(winnersDTO);
         return ResponseEntity.ok(response);
@@ -141,6 +152,8 @@ public class LotteryController {
     @PostMapping("/send-message-winners/lottery-type/{lotteryType}")
     @Operation(summary = "Send message to winners", description = "Sends messages to all verified winners of today for the specified lottery type")
     public ResponseEntity<String> sendMessageWinners(@PathVariable LotteryType lotteryType) {
+        log.info("[sendMessageWinners] Início | PathVariable: lotteryType={}", 
+                lotteryType, lotteryType);
         sendVerifiedUserDrawInputPort.sendVerifiedWinnerDraw(lotteryType);
         return ResponseEntity.status(HttpStatus.CREATED).body("Messages sent to verified winners successfully.");
     }
