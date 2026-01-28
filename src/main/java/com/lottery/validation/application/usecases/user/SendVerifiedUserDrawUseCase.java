@@ -36,7 +36,7 @@ public class SendVerifiedUserDrawUseCase implements SendVerifiedUserDrawInputPor
         log.info("[sendVerifiedWinnerDraw] | lotteryType={}", lotteryType);
 
         // Buscar todos os ganhadores do tipo de loteria
-        var winners = sendVerifiedUserDrawOutputPort.findWinners(lotteryType);
+        var winners = sendVerifiedUserDrawOutputPort.findWinnersNotSent(lotteryType);
         
         // Para cada ganhador, buscar informações do usuário e logar
         for (Winners winner : winners) {
@@ -49,7 +49,7 @@ public class SendVerifiedUserDrawUseCase implements SendVerifiedUserDrawInputPor
         
             var textMessage = String.format(
                 "🤑 Parabéns *%s*! Você está entre os ganhadores do sorteio *%d* da loteria *%s* com *%d* acertos 🎯! Números acertados: *%s* 💰",
-                user.getName(),
+                user.getName().toUpperCase(),
                 winner.getLotteryNumber(),
                 winner.getLotteryType().name(),
                 winner.getTotalMatches(),
@@ -70,6 +70,8 @@ public class SendVerifiedUserDrawUseCase implements SendVerifiedUserDrawInputPor
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
+
+                sendVerifiedUserDrawOutputPort.updateMessageSentStatus(winner.getUuidDraw(), winner.getLotteryNumber(), Boolean.TRUE);
 
             } catch (Exception e) {
                 System.err.println("Erro ao enviar mensagem WhatsApp: " + e.getMessage());

@@ -22,4 +22,5 @@ public class Winners {
     private Integer totalMatches;
     private LocalDateTime verifiedAt;
     private List<Integer> numbersMatched;
+    private Boolean messageSent;
 }

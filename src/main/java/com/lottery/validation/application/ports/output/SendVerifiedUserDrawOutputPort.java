@@ -9,8 +9,10 @@ import com.lottery.validation.domain.enums.LotteryType;
 
 public interface SendVerifiedUserDrawOutputPort {
     
-    List<Winners> findWinners(LotteryType lotteryType);
+    List<Winners> findWinnersNotSent(LotteryType lotteryType);
     
-    UserDraw findUserDrawByUuid(UUID uuidDraw);
+    UserDraw findUserDrawByUuid(UUID uuidDraw); // TODO: observar futuramente se esse eh o local correto para esse metodo
+
+    Winners updateMessageSentStatus(UUID uuidDraw, Integer lotteryNumber, Boolean messageSent);
     
 }

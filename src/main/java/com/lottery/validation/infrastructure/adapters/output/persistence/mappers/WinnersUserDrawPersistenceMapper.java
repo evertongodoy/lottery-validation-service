@@ -19,6 +19,7 @@ public class WinnersUserDrawPersistenceMapper {
                 .totalMatches(winners.getTotalMatches())
                 .verifiedAt(winners.getVerifiedAt())
                 .numbersMatched(winners.getNumbersMatched())
+                .messageSent(winners.getMessageSent())
                 .build();
     }
 
@@ -32,6 +33,7 @@ public class WinnersUserDrawPersistenceMapper {
                 .totalMatches(entity.getTotalMatches())
                 .verifiedAt(entity.getVerifiedAt())
                 .numbersMatched(entity.getNumbersMatched())
+                .messageSent(entity.getMessageSent())
                 .build();
     }
 }

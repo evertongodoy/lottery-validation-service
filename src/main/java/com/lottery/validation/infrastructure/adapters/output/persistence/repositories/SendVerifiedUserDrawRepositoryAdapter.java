@@ -10,6 +10,7 @@ import com.lottery.validation.infrastructure.adapters.output.persistence.mappers
 import com.lottery.validation.infrastructure.adapters.output.persistence.mappers.WinnersUserDrawPersistenceMapper;
 import com.lottery.validation.infrastructure.adapters.output.persistence.mongodb.UserDrawMongoRepository;
 import com.lottery.validation.infrastructure.adapters.output.persistence.mongodb.WinnersUserDrawMongoRepository;
+
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -37,7 +38,7 @@ public class SendVerifiedUserDrawRepositoryAdapter implements SendVerifiedUserDr
     }
 
     @Override
-    public List<Winners> findWinners(LotteryType lotteryType) {
+    public List<Winners> findWinnersNotSent(LotteryType lotteryType) {
         log.info("[findWinners] | lotteryType={}", lotteryType);
         // Buscar todos os ganhadores do tipo de loteria que foram verificados hoje
         LocalDate today = LocalDate.now();
@@ -45,8 +46,8 @@ public class SendVerifiedUserDrawRepositoryAdapter implements SendVerifiedUserDr
         return winnersUserDrawMongoRepository.findAll()
                 .stream()
                 .filter(entity -> entity.getLotteryType() == lotteryType)
-                .filter(entity -> entity.getVerifiedAt() != null 
-                        && entity.getVerifiedAt().toLocalDate().equals(today))
+                .filter(entity -> entity.getVerifiedAt().toLocalDate().equals(today))
+                .filter(entity -> Boolean.FALSE.equals(entity.getMessageSent()))
                 .map(winnersUserDrawPersistenceMapper::toDomain)
                 .toList();
     }
@@ -60,5 +61,15 @@ public class SendVerifiedUserDrawRepositoryAdapter implements SendVerifiedUserDr
                 .findFirst()
                 .map(userDrawPersistenceMapper::toDomain)
                 .orElseThrow(() -> new UserNotFoundException("UserDraw não encontrado para UUID: " + uuidDraw));
+    }
+
+    @Override
+    public Winners updateMessageSentStatus(UUID uuidDraw, Integer lotteryNumber, Boolean messageSent) {
+        log.info("[updateMessageSentStatus] | uuidDraw={} | messageSent={}", uuidDraw, messageSent);
+        var winnerEntity = winnersUserDrawMongoRepository.findByUuidDrawAndLotteryNumber(uuidDraw, lotteryNumber)
+            .orElseThrow(() -> new UserNotFoundException("Winners não encontrado para UUID: " + uuidDraw + " e lotteryNumber: " + lotteryNumber));
+        winnerEntity.setMessageSent(messageSent);
+        var updatedEntity = winnersUserDrawMongoRepository.save(winnerEntity);
+        return winnersUserDrawPersistenceMapper.toDomain(updatedEntity);
     }
 }

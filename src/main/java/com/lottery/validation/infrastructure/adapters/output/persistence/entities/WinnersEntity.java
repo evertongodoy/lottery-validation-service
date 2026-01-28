@@ -35,4 +35,7 @@ public class WinnersEntity {
     private LocalDateTime verifiedAt;
     
     private List<Integer> numbersMatched;
+
+    private Boolean messageSent;
+
 }

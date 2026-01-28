@@ -139,23 +139,24 @@ public class LotteryController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/verify-user-draws/lottery-type/{lotteryType}")
+    @PostMapping("/verify-user-draws/lottery-type/{lotteryType}")
     @Operation(summary = "Verify user draws", description = "Verifies all active user draws against the latest lottery draw from web")
     public ResponseEntity<VerifyUserDrawWinnerResponse> verifyUserDraws(@PathVariable LotteryType lotteryType) {
         log.info("[verifyUserDraws] Início | PathVariable: lotteryType={}", 
                 lotteryType, lotteryType);
         var winnersDTO = verifyUserDrawInputPort.verifyUserDraws(lotteryType);
         var response = verifyUserDrawWinnerRestMapper.toResponse(winnersDTO);
-        return ResponseEntity.ok(response);
+        return response.getTotalWinners() > 0 ?
+                ResponseEntity.status(HttpStatus.CREATED).body(response) :
+                ResponseEntity.ok(response);
     }
 
     @PostMapping("/send-message-winners/lottery-type/{lotteryType}")
     @Operation(summary = "Send message to winners", description = "Sends messages to all verified winners of today for the specified lottery type")
-    public ResponseEntity<String> sendMessageWinners(@PathVariable LotteryType lotteryType) {
-        log.info("[sendMessageWinners] Início | PathVariable: lotteryType={}", 
-                lotteryType, lotteryType);
+    public ResponseEntity<Void> sendMessageWinners(@PathVariable LotteryType lotteryType) {
+        log.info("[sendMessageWinners] Início | PathVariable: lotteryType={}",  lotteryType, lotteryType);
         sendVerifiedUserDrawInputPort.sendVerifiedWinnerDraw(lotteryType);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Messages sent to verified winners successfully.");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

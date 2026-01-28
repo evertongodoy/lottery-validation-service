@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,7 +43,7 @@ public class VerifyUserDrawUseCase implements VerifyUserDrawInputPort {
             
             var shouldStore = matches >= minMatches;
             
-            if (shouldStore) {
+            if (shouldStore && Objects.isNull(verifyUserDrawOutputPort.findHistoricWinnersByUuidDrawAndLotteryNumber(lotteryType, Integer.parseInt(lotteryNumber.toString()), userDraw.getUuidDraw()))) {
                 totalWinners++;
                 
                 // Calcular os números que coincidiram
@@ -57,10 +58,10 @@ public class VerifyUserDrawUseCase implements VerifyUserDrawInputPort {
                         .totalMatches(matches)
                         .verifiedAt(LocalDateTime.now())
                         .numbersMatched(numbersMatched)
+                        .messageSent(Boolean.FALSE)
                         .build();
                 
                 // Salvar o ganhador na collection historic_winners
-                // TODO: Verificar antes se a mesma loteria já foi salva para o mesmo uuidDraw e lotteryNumber
                 verifyUserDrawOutputPort.saveWinners(winners);
             }
         }

@@ -17,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -76,10 +77,20 @@ public class VerifyUserDrawRepositoryAdapter implements VerifyUserDrawOutputPort
         return winnersUserDrawPersistenceMapper.toDomain(savedEntity);
     }
 
+    @Override
+    public Winners findHistoricWinnersByUuidDrawAndLotteryNumber(LotteryType lotteryType, Integer lotteryNumber, UUID uuidDraw) {
+        log.info("[findHistoricWinnersByUuidDrawAndLotteryNumber] | lotteryType={} | lotteryNumber={} | uuidDraw={}", lotteryType, lotteryNumber, uuidDraw);
+        return winnersUserDrawMongoRepository
+                .findByLotteryTypeAndLotteryNumberAndUuidDraw(lotteryType, lotteryNumber, uuidDraw)
+                .map(winnersUserDrawPersistenceMapper::toDomain)
+                .orElse(null);
+    }
+
     private String getLotteryPath(LotteryType lotteryType) {
         return switch (lotteryType) {
             case LOTOFACIL -> "lotofacil";
             case MEGASENA -> "megasena";
         };
     }
+
 }
