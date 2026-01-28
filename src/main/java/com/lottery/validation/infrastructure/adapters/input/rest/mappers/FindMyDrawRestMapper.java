@@ -2,6 +2,7 @@ package com.lottery.validation.infrastructure.adapters.input.rest.mappers;
 
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import com.lottery.validation.application.dto.FindMyDrawResponseDTO;
@@ -9,10 +10,12 @@ import com.lottery.validation.domain.entities.UserDraw;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.FindMyDrawResponse;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.MyDrawData;
 
+@Slf4j
 @Component
 public class FindMyDrawRestMapper {
 
     public FindMyDrawResponse toResponse(FindMyDrawResponseDTO dto) {
+        log.info("[toResponse] | dto={}", dto);
         return FindMyDrawResponse.builder()
                 .content(dto.getContent().stream()
                         .map(this::toMyDrawData)

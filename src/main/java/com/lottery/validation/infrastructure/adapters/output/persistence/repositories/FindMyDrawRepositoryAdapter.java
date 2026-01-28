@@ -3,6 +3,7 @@ package com.lottery.validation.infrastructure.adapters.output.persistence.reposi
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import com.lottery.validation.domain.enums.LotteryType;
 import com.lottery.validation.infrastructure.adapters.output.persistence.mappers.UserDrawPersistenceMapper;
 import com.lottery.validation.infrastructure.adapters.output.persistence.mongodb.UserDrawMongoRepository;
 
+@Slf4j
 @Component
 public class FindMyDrawRepositoryAdapter implements FindMyDrawOutputPort {
 
@@ -26,6 +28,7 @@ public class FindMyDrawRepositoryAdapter implements FindMyDrawOutputPort {
 
     @Override
     public Page<UserDraw> findMyDrawByLotteryType(UUID uuidSubject, LotteryType lotteryType, Pageable pageable) {
+        log.info("[findMyDrawByLotteryType] | uuidSubject={}, lotteryType={}, pageable={}", uuidSubject, lotteryType, pageable);
         var pageEntities = userDrawMongoRepository.findByUuidSubjectAndLotteryType(uuidSubject, lotteryType, pageable);
         return pageEntities.map(userDrawPersistenceMapper::toDomain);
     }

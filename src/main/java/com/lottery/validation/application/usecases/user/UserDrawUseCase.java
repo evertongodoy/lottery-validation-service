@@ -13,6 +13,9 @@ import com.lottery.validation.domain.entities.UserDraw;
 import com.lottery.validation.domain.exceptions.DuplicateUserDrawException;
 import com.lottery.validation.domain.exceptions.UserNotFoundException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class UserDrawUseCase implements UserDrawInputPort {
 
     private final UserDrawOutputPort userDrawOutputPort;
@@ -25,6 +28,7 @@ public class UserDrawUseCase implements UserDrawInputPort {
 
     @Override
     public UserDrawResponseDTO createUserDraw(UserDrawRequestDTO userDrawRequestDTO) {
+        log.info("[createUserDraw] | userDrawRequestDTO={}", userDrawRequestDTO);
         // Buscar o UUID do usuário pelo subject
         var user = userOutputPort.findBySubject(userDrawRequestDTO.getSubject())
                 .orElseThrow(() -> new UserNotFoundException(userDrawRequestDTO.getSubject()));

@@ -1,14 +1,17 @@
 package com.lottery.validation.infrastructure.adapters.output.persistence.mappers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import com.lottery.validation.domain.entities.User;
 import com.lottery.validation.infrastructure.adapters.output.persistence.entities.UserEntity;
 
+@Slf4j
 @Component
 public class UserPersistenceMapper {
 
     public UserEntity toEntity(User user) {
+        log.info("[toEntity] | user={}", user);
         UserEntity entity = new UserEntity();
         entity.setUuid(user.getUuid());
         entity.setName(user.getName());
@@ -20,6 +23,7 @@ public class UserPersistenceMapper {
     }
 
     public User toDomain(UserEntity entity) {
+        log.info("[toDomain] | entity={}", entity);
         User user = new User();
         user.setUuid(entity.getUuid());
         user.setName(entity.getName());

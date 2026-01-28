@@ -20,6 +20,9 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.locks.LockSupport;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class SaveLotteryUseCase implements SaveLotteryInputPort {
 
@@ -38,6 +41,7 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
 
     @Override
     public SaveLotteryResultDTO saveLottery(SaveLotteryDTO saveLotteryDTO) {
+        log.info("[saveLottery] | saveLotteryDTO={}", saveLotteryDTO);
         var lotteryType = saveLotteryDTO.getLotteryType();
         var lotteryPath = getLotteryPath(lotteryType);
         

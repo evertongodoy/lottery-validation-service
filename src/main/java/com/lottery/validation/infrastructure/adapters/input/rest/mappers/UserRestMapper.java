@@ -1,15 +1,18 @@
 package com.lottery.validation.infrastructure.adapters.input.rest.mappers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import com.lottery.validation.application.dto.UserDTO;
 import com.lottery.validation.infrastructure.adapters.input.rest.requests.CreateUserRequest;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.UserResponse;
 
+@Slf4j
 @Component
 public class UserRestMapper {
 
     public UserDTO toDTO(CreateUserRequest request) {
+        log.info("[toDTO] | request={}", request);
         UserDTO dto = new UserDTO();
         dto.setName(request.getName());
         dto.setRole(request.getRole());
@@ -19,6 +22,7 @@ public class UserRestMapper {
     }
 
     public UserResponse toResponse(UserDTO dto) {
+        log.info("[toResponse] | dto={}", dto);
         return new UserResponse(
             dto.getUuid(),
             dto.getName(),

@@ -11,6 +11,9 @@ import com.lottery.validation.application.ports.output.SimulateLotteryDrawOutput
 import com.lottery.validation.domain.entities.Lottery;
 import com.lottery.validation.domain.enums.LotteryType;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SimulateLotteryDrawUseCase implements SimulateLotteryDrawInputPort {
 
     private final SimulateLotteryDrawOutputPort simulateLotteryDrawOutputPort;
@@ -21,6 +24,7 @@ public class SimulateLotteryDrawUseCase implements SimulateLotteryDrawInputPort 
 
     @Override
     public SimulateLotteryDrawDTO simulateLotteryDraw(LotteryType lotteryType, List<Integer> numbers) {
+        log.info("[simulateLotteryDraw] | lotteryType={}, numbers={}", lotteryType, numbers);
         List<Lottery> lotteries = simulateLotteryDrawOutputPort.findLotteries(lotteryType);
         
         // Definir o mínimo de acertos conforme o tipo de jogo

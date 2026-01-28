@@ -1,6 +1,7 @@
 package com.lottery.validation.infrastructure.adapters.output.persistence.repositories;
 
 import com.lottery.validation.application.ports.output.SendVerifiedUserDrawOutputPort;
+import lombok.extern.slf4j.Slf4j;
 import com.lottery.validation.domain.entities.UserDraw;
 import com.lottery.validation.domain.entities.Winners;
 import com.lottery.validation.domain.enums.LotteryType;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Component
 public class SendVerifiedUserDrawRepositoryAdapter implements SendVerifiedUserDrawOutputPort {
 
@@ -36,6 +38,7 @@ public class SendVerifiedUserDrawRepositoryAdapter implements SendVerifiedUserDr
 
     @Override
     public List<Winners> findWinners(LotteryType lotteryType) {
+        log.info("[findWinners] | lotteryType={}", lotteryType);
         // Buscar todos os ganhadores do tipo de loteria que foram verificados hoje
         LocalDate today = LocalDate.now();
         
@@ -50,6 +53,7 @@ public class SendVerifiedUserDrawRepositoryAdapter implements SendVerifiedUserDr
 
     @Override
     public UserDraw findUserDrawByUuid(UUID uuidDraw) {
+        log.info("[findUserDrawByUuid] | uuidDraw={}", uuidDraw);
         return userDrawMongoRepository.findAll()
                 .stream()
                 .filter(entity -> entity.getUuidDraw().equals(uuidDraw))

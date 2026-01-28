@@ -12,7 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 // Nao precisa do @Service porque a classe ja e criada no BeanConfiguration
+@Slf4j
 public class VerifyUserDrawUseCase implements VerifyUserDrawInputPort {
 
     private final VerifyUserDrawOutputPort verifyUserDrawOutputPort;
@@ -23,6 +26,7 @@ public class VerifyUserDrawUseCase implements VerifyUserDrawInputPort {
 
     @Override
     public WinnersDTO verifyUserDraws(LotteryType lotteryType) {
+        log.info("[verifyUserDraws] | lotteryType={}", lotteryType);
         var webLottery = verifyUserDrawOutputPort.findWebLottery(lotteryType);
         var lotteryNumber = webLottery.get("numero");
         var totalWinners = 0;
@@ -56,6 +60,7 @@ public class VerifyUserDrawUseCase implements VerifyUserDrawInputPort {
                         .build();
                 
                 // Salvar o ganhador na collection historic_winners
+                // TODO: Verificar antes se a mesma loteria já foi salva para o mesmo uuidDraw e lotteryNumber
                 verifyUserDrawOutputPort.saveWinners(winners);
             }
         }

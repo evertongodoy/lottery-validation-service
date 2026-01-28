@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class FindLotteryUseCase implements FindLotteryInputPort {
 
@@ -23,6 +26,7 @@ public class FindLotteryUseCase implements FindLotteryInputPort {
 
     @Override
     public FindLotteryResultDTO findLottery(FindLotteryDTO findLotteryDTO) {
+        log.info("[findLottery] | findLotteryDTO={}", findLotteryDTO);
         Sort.Direction sortDirection = "DESC".equalsIgnoreCase(findLotteryDTO.direction()) 
             ? Sort.Direction.DESC 
             : Sort.Direction.ASC;

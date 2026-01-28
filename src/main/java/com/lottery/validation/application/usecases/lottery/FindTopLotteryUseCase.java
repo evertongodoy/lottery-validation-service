@@ -13,7 +13,10 @@ import com.lottery.validation.application.ports.output.FindTopLotteryOutputPort;
 import com.lottery.validation.domain.entities.Lottery;
 import com.lottery.validation.domain.enums.LotteryType;
 
+import lombok.extern.slf4j.Slf4j;
+
 // Nao precisa do @Service porque a classe ja e criada no BeanConfiguration
+@Slf4j
 public class FindTopLotteryUseCase implements FindTopLotteryInputPort {
 
     private final FindTopLotteryOutputPort findTopLotteryOutputPort;
@@ -26,6 +29,7 @@ public class FindTopLotteryUseCase implements FindTopLotteryInputPort {
     
     @Override
     public FindTopFrequencyDTO findTopLottery(LotteryType lotteryType) {
+        log.info("[findTopLottery] | lotteryType={}", lotteryType);
         List<Lottery> lotteries = findTopLotteryOutputPort.findLotteries(lotteryType);
         var sortedDrawNumbers = lotteries.stream()
                 .map(Lottery::getSortedDrawNumbers)

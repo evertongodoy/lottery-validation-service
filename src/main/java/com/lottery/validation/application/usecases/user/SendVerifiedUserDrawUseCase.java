@@ -10,7 +10,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 // Nao precisa do @Service porque a classe ja e criada no BeanConfiguration
+@Slf4j
 public class SendVerifiedUserDrawUseCase implements SendVerifiedUserDrawInputPort {
 
     private static final String WHATSAPP_API_URL = "https://evolution-evolution-api.kdzex0.easypanel.host";
@@ -30,6 +33,7 @@ public class SendVerifiedUserDrawUseCase implements SendVerifiedUserDrawInputPor
 
     @Override
     public void sendVerifiedWinnerDraw(LotteryType lotteryType) {
+        log.info("[sendVerifiedWinnerDraw] | lotteryType={}", lotteryType);
 
         // Buscar todos os ganhadores do tipo de loteria
         var winners = sendVerifiedUserDrawOutputPort.findWinners(lotteryType);

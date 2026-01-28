@@ -1,6 +1,7 @@
 package com.lottery.validation.infrastructure.adapters.output.persistence.repositories;
 
 import com.lottery.validation.application.ports.output.VerifyUserDrawOutputPort;
+import lombok.extern.slf4j.Slf4j;
 import com.lottery.validation.domain.entities.UserDraw;
 import com.lottery.validation.domain.entities.Winners;
 import com.lottery.validation.domain.enums.LotteryType;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class VerifyUserDrawRepositoryAdapter implements VerifyUserDrawOutputPort {
 
@@ -43,6 +45,7 @@ public class VerifyUserDrawRepositoryAdapter implements VerifyUserDrawOutputPort
 
     @Override
     public Map<String, Object> findWebLottery(LotteryType lotteryType) {
+        log.info("[findWebLottery] | lotteryType={}", lotteryType);
         String lotteryPath = getLotteryPath(lotteryType);
         
         return Optional.ofNullable(
@@ -56,6 +59,7 @@ public class VerifyUserDrawRepositoryAdapter implements VerifyUserDrawOutputPort
 
     @Override
     public List<UserDraw> findActiveUserDrawsByLotteryType(LotteryType lotteryType) {
+        log.info("[findActiveUserDrawsByLotteryType] | lotteryType={}", lotteryType);
         return userDrawMongoRepository.findAll()
                 .stream()
                 .filter(entity -> entity.getActive() != null && entity.getActive())
@@ -66,6 +70,7 @@ public class VerifyUserDrawRepositoryAdapter implements VerifyUserDrawOutputPort
 
     @Override
     public Winners saveWinners(Winners winners) {
+        log.info("[saveWinners] | winners={}", winners);
         var entity = winnersUserDrawPersistenceMapper.toEntity(winners);
         var savedEntity = winnersUserDrawMongoRepository.save(entity);
         return winnersUserDrawPersistenceMapper.toDomain(savedEntity);

@@ -2,12 +2,15 @@ package com.lottery.validation.infrastructure.adapters.output.persistence.mapper
 
 import com.lottery.validation.domain.entities.Winners;
 import com.lottery.validation.infrastructure.adapters.output.persistence.entities.WinnersEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class WinnersUserDrawPersistenceMapper {
 
     public WinnersEntity toEntity(Winners winners) {
+        log.info("[toEntity] | winners={}", winners);
         return WinnersEntity.builder()
                 .uuidDraw(winners.getUuidDraw())
                 .lotteryType(winners.getLotteryType())
@@ -20,6 +23,7 @@ public class WinnersUserDrawPersistenceMapper {
     }
 
     public Winners toDomain(WinnersEntity entity) {
+        log.info("[toDomain] | entity={}", entity);
         return Winners.builder()
                 .uuidDraw(entity.getUuidDraw())
                 .lotteryType(entity.getLotteryType())

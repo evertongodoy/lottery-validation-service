@@ -5,12 +5,14 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 
 import com.lottery.validation.application.ports.output.UserDrawOutputPort;
 import com.lottery.validation.domain.entities.UserDraw;
 import com.lottery.validation.infrastructure.adapters.output.persistence.mappers.UserDrawPersistenceMapper;
 import com.lottery.validation.infrastructure.adapters.output.persistence.mongodb.UserDrawMongoRepository;
 
+@Slf4j
 @Component
 public class UserDrawRepositoryAdapter implements UserDrawOutputPort {
 
@@ -25,6 +27,7 @@ public class UserDrawRepositoryAdapter implements UserDrawOutputPort {
 
     @Override
     public UserDraw save(UserDraw userDraw) {
+        log.info("[save] | userDraw={}", userDraw);
         var entity = userDrawPersistenceMapper.toEntity(userDraw);
         var savedEntity = userDrawMongoRepository.save(entity);
         return userDrawPersistenceMapper.toDomain(savedEntity);
@@ -32,6 +35,7 @@ public class UserDrawRepositoryAdapter implements UserDrawOutputPort {
 
     @Override
     public List<UserDraw> findByUuidSubject(UUID uuidSubject) {
+        log.info("[findByUuidSubject] | uuidSubject={}", uuidSubject);
         return userDrawMongoRepository.findByUuidSubject(uuidSubject)
                 .stream()
                 .map(userDrawPersistenceMapper::toDomain)

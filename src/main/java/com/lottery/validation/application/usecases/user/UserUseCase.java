@@ -9,7 +9,10 @@ import com.lottery.validation.application.ports.output.UserOutputPort;
 import com.lottery.validation.domain.entities.User;
 import com.lottery.validation.domain.exceptions.DuplicateSubjectException;
 
+import lombok.extern.slf4j.Slf4j;
+
 // Nao precisa do @Service porque a classe ja e criada no BeanConfiguration
+@Slf4j
 public class UserUseCase implements UserInputPort {
 
     private final UserOutputPort userOutputPort;
@@ -20,6 +23,7 @@ public class UserUseCase implements UserInputPort {
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
+        log.info("[createUser] | userDTO={}", userDTO);
         // Validar se o subject já existe
         if (userOutputPort.existsBySubject(userDTO.getSubject())) {
             throw new DuplicateSubjectException(userDTO.getSubject());
@@ -50,6 +54,7 @@ public class UserUseCase implements UserInputPort {
 
     @Override
     public UserDTO getSubjectData(String subject) {
+        log.info("[getSubjectData] | subject={}", subject);
         // Buscar usuário pelo subject
         var user = userOutputPort.findBySubject(subject)
                 .orElseThrow(() -> new RuntimeException("Subject informado nao existe"));

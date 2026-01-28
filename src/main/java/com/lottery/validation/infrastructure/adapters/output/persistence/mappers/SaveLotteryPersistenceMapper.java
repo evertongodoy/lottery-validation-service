@@ -2,12 +2,15 @@ package com.lottery.validation.infrastructure.adapters.output.persistence.mapper
 
 import com.lottery.validation.domain.entities.Lottery;
 import com.lottery.validation.infrastructure.adapters.output.persistence.entities.LotteryEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class SaveLotteryPersistenceMapper {
 
     public LotteryEntity toEntity(Lottery lottery) {
+        log.info("[toEntity] | lottery={}", lottery);
         if (lottery == null) {
             return null;
         }
@@ -27,6 +30,7 @@ public class SaveLotteryPersistenceMapper {
     }
 
     public Lottery toDomain(LotteryEntity entity) {
+        log.info("[toDomain] | entity={}", entity);
         if (entity == null) {
             return null;
         }

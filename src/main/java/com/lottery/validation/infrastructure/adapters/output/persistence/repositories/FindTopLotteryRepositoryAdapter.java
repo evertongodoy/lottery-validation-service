@@ -3,12 +3,14 @@ package com.lottery.validation.infrastructure.adapters.output.persistence.reposi
 import java.util.List;
 
 import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 
 import com.lottery.validation.application.ports.output.FindTopLotteryOutputPort;
 import com.lottery.validation.domain.entities.Lottery;
 import com.lottery.validation.domain.enums.LotteryType;
 import com.lottery.validation.infrastructure.adapters.output.persistence.mongodb.LotteryMongoRepository;
 
+@Slf4j
 @Component
 public class FindTopLotteryRepositoryAdapter implements FindTopLotteryOutputPort{
 
@@ -20,6 +22,7 @@ public class FindTopLotteryRepositoryAdapter implements FindTopLotteryOutputPort
 
     @Override
     public List<Lottery> findLotteries(LotteryType lotteryType) {
+        log.info("[findLotteries] | lotteryType={}", lotteryType);
         var allByLotteryType = lotteryMongoRepository.findAllByLotteryType(lotteryType);
         return allByLotteryType.stream()
                 .map(entity -> {
