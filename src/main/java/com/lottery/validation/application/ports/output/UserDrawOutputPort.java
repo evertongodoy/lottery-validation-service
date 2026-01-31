@@ -9,5 +9,6 @@ public interface UserDrawOutputPort {
 
     UserDraw save(UserDraw userDraw);
     List<UserDraw> findByUuidSubject(UUID uuidSubject);
+    UserDraw findUserDrawByUuid(UUID uuidDraw);
 
 }

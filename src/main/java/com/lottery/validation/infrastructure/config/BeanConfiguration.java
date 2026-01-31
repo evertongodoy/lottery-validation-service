@@ -79,9 +79,10 @@ public class BeanConfiguration {
     @Bean
     public SendVerifiedUserDrawInputPort sendVerifiedUserDrawInputPort(
             SendVerifiedUserDrawOutputPort sendVerifiedUserDrawOutputPort,
+            UserDrawOutputPort userDrawOutputPort,
             UserOutputPort userOutputPort,
             WebClient.Builder webClientBuilder) {
-        return new SendVerifiedUserDrawUseCase(sendVerifiedUserDrawOutputPort, userOutputPort, webClientBuilder);
+        return new SendVerifiedUserDrawUseCase(sendVerifiedUserDrawOutputPort, userDrawOutputPort, userOutputPort, webClientBuilder);
     }
 
     @Bean

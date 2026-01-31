@@ -41,4 +41,15 @@ public class UserDrawRepositoryAdapter implements UserDrawOutputPort {
                 .map(userDrawPersistenceMapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public UserDraw findUserDrawByUuid(UUID uuidDraw) {
+        log.info("[findUserDrawByUuid] | uuidDraw={}", uuidDraw);
+        return userDrawMongoRepository.findAll()
+                .stream()
+                .filter(entity -> entity.getUuidDraw().equals(uuidDraw))
+                .findFirst()
+                .map(userDrawPersistenceMapper::toDomain)
+                .orElseThrow(() -> new RuntimeException("UserDraw não encontrado para UUID: " + uuidDraw));
+    }
 }

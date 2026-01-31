@@ -2,6 +2,7 @@ package com.lottery.validation.application.usecases.user;
 
 import com.lottery.validation.application.ports.input.SendVerifiedUserDrawInputPort;
 import com.lottery.validation.application.ports.output.SendVerifiedUserDrawOutputPort;
+import com.lottery.validation.application.ports.output.UserDrawOutputPort;
 import com.lottery.validation.application.ports.output.UserOutputPort;
 import com.lottery.validation.domain.entities.UserDraw;
 import com.lottery.validation.domain.entities.Winners;
@@ -20,13 +21,16 @@ public class SendVerifiedUserDrawUseCase implements SendVerifiedUserDrawInputPor
     private static final String API_KEY = "429683C4C977415CAAFCCE10F7D57E11";
 
     private final SendVerifiedUserDrawOutputPort sendVerifiedUserDrawOutputPort;
+    private final UserDrawOutputPort userDrawOutputPort;
     private final UserOutputPort userOutputPort;
     private final WebClient webClient;
 
     public SendVerifiedUserDrawUseCase(SendVerifiedUserDrawOutputPort sendVerifiedUserDrawOutputPort,
+                                      UserDrawOutputPort userDrawOutputPort,
                                       UserOutputPort userOutputPort,
                                       WebClient.Builder webClientBuilder) {
         this.sendVerifiedUserDrawOutputPort = sendVerifiedUserDrawOutputPort;
+        this.userDrawOutputPort = userDrawOutputPort;
         this.userOutputPort = userOutputPort;
         this.webClient = webClientBuilder.baseUrl(WHATSAPP_API_URL).build();
     }
@@ -41,7 +45,7 @@ public class SendVerifiedUserDrawUseCase implements SendVerifiedUserDrawInputPor
         // Para cada ganhador, buscar informações do usuário e logar
         for (Winners winner : winners) {
             // Buscar o UserDraw pelo uuidDraw
-            UserDraw userDraw = sendVerifiedUserDrawOutputPort.findUserDrawByUuid(winner.getUuidDraw());
+            UserDraw userDraw = userDrawOutputPort.findUserDrawByUuid(winner.getUuidDraw());
             
             // Buscar o usuário pelo uuidSubject (UUID)
             var user = userOutputPort.findByUuid(userDraw.getUuidSubject())
