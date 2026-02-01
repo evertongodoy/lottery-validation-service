@@ -159,4 +159,11 @@ public class LotteryController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @GetMapping("/health")
+    @Operation(summary = "Health check", description = "Checks the health status of the Lottery Service")
+    public ResponseEntity<String> healthCheck() {
+        log.info("[healthCheck] Início");
+        return ResponseEntity.ok("Lottery Service is up and running!");
+    }
+
 }
