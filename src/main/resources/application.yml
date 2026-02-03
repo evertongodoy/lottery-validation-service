@@ -1,6 +1,11 @@
 spring:
   application:
     name: lottery-validation-service
+  mongodb:    
+    uri: mongodb+srv://lotteryuser:b7vJBh8w5V2J4Z0A@lottery-validation-clus.cb6sj7y.mongodb.net/?authSource=admin&appName=lottery-validation-cluster
+    database: lottery_statistics_db
+    representation:
+      uuid: STANDARD # This is to avoid issues with UUID representation between different drivers
 
 server:
   port: ${SERVER_PORT:8080}
