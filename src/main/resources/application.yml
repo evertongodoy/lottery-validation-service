@@ -3,7 +3,7 @@ spring:
     name: lottery-validation-service
   data:
     mongodb:    
-      uri: mongodb+srv://${USER_DB}:${sm://PASSWORD_DB:1}@lottery-validation-clus.cb6sj7y.mongodb.net/?authSource=admin&appName=lottery-validation-cluster
+      uri: mongodb+srv://${USER_DB}:${sm://PASSWORD_DB/1}@lottery-validation-clus.cb6sj7y.mongodb.net/?authSource=admin&appName=lottery-validation-cluster
       database: lottery_statistics_db
       uuid-representation: STANDARD # This is to avoid issues with UUID representation between different drivers
   cloud:
