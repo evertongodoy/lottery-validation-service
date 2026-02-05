@@ -1,6 +1,6 @@
 spring:
   config:
-    import: "sm://"
+    import: "optional:sm://"
   application:
     name: lottery-validation-service
   data:
@@ -15,6 +15,8 @@ spring:
       secretmanager: # Setup for Google Cloud Secret Manager
         enabled: true # Enable Secret Manager integration
         project-id: lottery-validation-service # Project ID where secrets are stored
+      sql:
+        enabled: false   # <- desliga o post-processor que exigia database-name
 
 server:
   port: 8080
