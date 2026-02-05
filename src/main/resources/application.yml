@@ -8,8 +8,10 @@ spring:
       uuid-representation: STANDARD # This is to avoid issues with UUID representation between different drivers
   cloud:
     gcp:
+      parametermanager:
+        enabled: false # Disable Parameter Manager if not used due to potential conflicts with Secret Manager
       secretmanager: # Setup for Google Cloud Secret Manager
-        enabled: true
+        enabled: true # Enable Secret Manager integration
         project-id: lottery-validation-service # Project ID where secrets are stored
 
 server:
