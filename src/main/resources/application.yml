@@ -3,9 +3,14 @@ spring:
     name: lottery-validation-service
   data:
     mongodb:    
-      uri: mongodb+srv://${USER_DB}:b7vJBh8w5V2J4Z0A@lottery-validation-clus.cb6sj7y.mongodb.net/?authSource=admin&appName=lottery-validation-cluster
+      uri: mongodb+srv://${USER_DB}:${sm://PASSWORD_DB:1}@lottery-validation-clus.cb6sj7y.mongodb.net/?authSource=admin&appName=lottery-validation-cluster
       database: lottery_statistics_db
       uuid-representation: STANDARD # This is to avoid issues with UUID representation between different drivers
+  cloud:
+    gcp:
+      secretmanager: # Setup for Google Cloud Secret Manager
+        enabled: true
+        project-id: lottery-validation-service # Project ID where secrets are stored
 
 server:
   port: 8080
