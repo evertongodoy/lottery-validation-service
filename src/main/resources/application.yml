@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: "sm://"
   application:
     name: lottery-validation-service
   data:
