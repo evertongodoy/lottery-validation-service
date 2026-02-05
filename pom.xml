@@ -24,7 +24,8 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springdoc.version>2.8.15</springdoc.version><!-- spring 4.0.2 usar 3.0.1-->
-        <spring-cloud-gcp.version>7.3.0</spring-cloud-gcp.version>
+        <spring-cloud-dependencies.version>2025.0.1</spring-cloud-dependencies.version>
+        <spring-cloud-gcp-dependencies.version>7.3.0</spring-cloud-gcp-dependencies.version>
     </properties>
 
     <dependencies>
@@ -46,6 +47,7 @@
         </dependency>
 
         <!-- Spring Boot Starter Web -->
+        <!-- Nao necessario, pois usamos WebFlux com WebClient -->
         <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -114,19 +116,12 @@
         </dependency>
 
         <!-- Spring Cloud GCP Secret Manager - https://mvnrepository.com/artifact/com.google.cloud/spring-cloud-gcp-starter-secretmanager-->
+        <!-- Versao fica gerenciada pelo BOM do Spring Cloud GCP -->
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-starter-secretmanager</artifactId>
-            <!--<version>${spring-cloud-gcp.version}</version> Use a versão compatível com seu Spring Boot -->
         </dependency>
-        <!-- Spring Cloud Starter Bootstrap - https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-bootstrap/5.0.1-->
-        <!--<dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-bootstrap</artifactId>
-            <version>5.0.1</version>  Para usar bootstrap.yml/properties
-        </dependency>-->
-
-
+ 
     </dependencies>
 
     <build>
@@ -150,20 +145,20 @@
         <dependencies>
             <!-- Spring Cloud (alinha com seu Spring Boot 3.5.x) -->
             <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-dependencies</artifactId>
-            <version>2025.0.1</version>
-            <type>pom</type>
-            <scope>import</scope>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <!-- Spring Cloud GCP -->
             <dependency>
-            <groupId>com.google.cloud</groupId>
-            <artifactId>spring-cloud-gcp-dependencies</artifactId>
-            <version>7.3.0</version>
-            <type>pom</type>
-            <scope>import</scope>
+                <groupId>com.google.cloud</groupId>
+                <artifactId>spring-cloud-gcp-dependencies</artifactId>
+                <version>${spring-cloud-gcp-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
         </dependencyManagement>

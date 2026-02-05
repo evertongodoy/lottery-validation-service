@@ -1,11 +1,17 @@
+server:
+  port: 8080
+  servlet:
+    # context-path: /lottery-validation
+    context-path: /
+
 spring:
   config:
-    import: "optional:sm://" # isso garante carregamento via Config Data API do Spring Boot 3+
+    import: "optional:sm://" # This ensures loading via the Spring Boot 3+ Config Data API.
   application:
     name: lottery-validation-service
-  data:
+  data: # Springboot 4 do not uses spring.data anymore, but spring.data.mongodb works with Springboot 3 
     mongodb:    
-      uri: mongodb+srv://${USER_DB}:${sm://PASSWORD_DB}@lottery-validation-clus.cb6sj7y.mongodb.net/?authSource=admin&appName=lottery-validation-cluster
+      uri: mongodb+srv://${USER_DB}:${sm://PASSWORD_DB/1}@lottery-validation-clus.cb6sj7y.mongodb.net/?authSource=admin&appName=lottery-validation-cluster
       database: lottery_statistics_db
       uuid-representation: STANDARD # This is to avoid issues with UUID representation between different drivers
   cloud:
@@ -15,30 +21,6 @@ spring:
       secretmanager: # Setup for Google Cloud Secret Manager
         enabled: true # Enable Secret Manager integration
         project-id: lottery-validation-service # Project ID where secrets are stored
-#      sql:
-#        enabled: false   # <- desliga o post-processor que exigia database-name
-
-server:
-  port: 8080
-  servlet:
-    # context-path: /lottery-validation
-    context-path: /
-
-#profiles:
- #   active: ${SPRING_PROFILES_ACTIVE}
-  
-  # No Spring Boot 4 nao tem mais o prefix spring.data.mongodb, comeca ser spring.mongodb
- # mongodb:
- #   uri: ${MONGODB_URI_PROD}:${MONGO_PORT}/${DATABASE_NAME}?authSource=${MONGO_AUTH_DB}
- #   database: ${DATABASE_NAME}
- #   representation:
- #     uuid: STANDARD
-
-# No Jackson 3, o comportamento padrão já é ISO-8601, ou seja: "2025-12-17T00:10:30"  
-  # jackson:
-  #   serialization:
-  #     write-dates-as-timestamps: false
-  #   time-zone: UTC
 
 springdoc:
   api-docs:
