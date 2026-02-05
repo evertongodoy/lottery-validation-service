@@ -24,7 +24,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springdoc.version>2.8.15</springdoc.version><!-- spring 4.0.2 usar 3.0.1-->
-        <spring-cloud-gcp.version>7.4.4</spring-cloud-gcp.version>
+        <spring-cloud-gcp.version>7.3.0</spring-cloud-gcp.version>
     </properties>
 
     <dependencies>
