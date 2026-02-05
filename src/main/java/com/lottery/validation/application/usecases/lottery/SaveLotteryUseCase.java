@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
 import lombok.extern.slf4j.Slf4j;
@@ -93,7 +94,7 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
             }
             
             // Aguardar 5 segundos antes da próxima requisição para evitar sobrecarga na API
-            LockSupport.parkNanos(0_000_000_000L); // 5 segundos em nanosegundos
+            LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(3));
         }
 
         return new SaveLotteryResultDTO(processingDate, drawIds, drawIds.size());
