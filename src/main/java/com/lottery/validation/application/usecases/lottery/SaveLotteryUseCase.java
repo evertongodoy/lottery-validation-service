@@ -9,14 +9,13 @@ import com.lottery.validation.domain.enums.LotteryType;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
@@ -31,13 +30,13 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final SaveLotteryOutputPort saveLotteryOutputPort;
-    private final WebClient webClient;
+    private final RestTemplate restTemplate;
 
     private static final ParameterizedTypeReference<Map<String, Object>> MAP_TYPE = new ParameterizedTypeReference<>() {};
 
-    public SaveLotteryUseCase(SaveLotteryOutputPort saveLotteryOutputPort, WebClient.Builder webClientBuilder) {
+    public SaveLotteryUseCase(SaveLotteryOutputPort saveLotteryOutputPort, RestTemplate restTemplate) {
         this.saveLotteryOutputPort = saveLotteryOutputPort;
-        this.webClient = webClientBuilder.baseUrl(BASE_URL).build();
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -53,12 +52,13 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
                 .orElse(1);
         
         // Buscar o ultimo sorteio disponível na API
-        var latestDrawNumberFromApi = Optional.ofNullable(webClient.get()
-                .uri("/%s".formatted(lotteryPath))
-                .retrieve()
-                .bodyToMono(MAP_TYPE)
-                .map(data -> getIntegerValue(data, "numero"))
-                .block()).orElseThrow(() -> new RuntimeException("Failed to fetch latest draw number from API"));
+        var url = String.format("%s/%s", BASE_URL, lotteryPath);
+        var response = restTemplate.getForObject(url, Map.class);
+        var latestDrawNumberFromApi = getIntegerValue(response, "numero");
+        
+        if (latestDrawNumberFromApi == null) {
+            throw new RuntimeException("Failed to fetch latest draw number from API");
+        }
 
         var processingDate = LocalDate.now();
         List<Integer> drawIds = new ArrayList<>();
@@ -67,15 +67,13 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
         while (nextDrawNumber <= latestDrawNumberFromApi) {
             
             final Integer currentDrawNumber = nextDrawNumber;
-            var url = String.format("/%s/%d", lotteryPath, currentDrawNumber);
+            var drawUrl = String.format("%s/%s/%d", BASE_URL, lotteryPath, currentDrawNumber);
             
-            var lotteryData = Optional.ofNullable(
-                webClient.get()
-                            .uri(url)
-                            .retrieve()
-                            .bodyToMono(MAP_TYPE)
-                            .block()
-                        ).orElseThrow(() -> new RuntimeException("Failed to fetch draw data from API for draw number: " + currentDrawNumber));
+            var lotteryData = restTemplate.getForObject(drawUrl, Map.class);
+            
+            if (lotteryData == null) {
+                throw new RuntimeException("Failed to fetch draw data from API for draw number: " + currentDrawNumber);
+            }
 
             var nextLotteryNumberFromApi = getIntegerValue(lotteryData, "numeroConcursoProximo");
 
