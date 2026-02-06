@@ -1,26 +1,14 @@
-server:
-  port: 8080
-  servlet:
-    # context-path: /lottery-validation
-    context-path: /
-
 spring:
-  config:
-    import: "optional:sm://" # This ensures loading via the Spring Boot 3+ Config Data API.
   application:
     name: lottery-validation-service
-  data: # Springboot 4 do not uses spring.data anymore, but spring.data.mongodb works with Springboot 3 
-    mongodb:    
-      uri: mongodb+srv://${USER_DB}:${sm://PASSWORD_DB/1}@lottery-validation-clus.cb6sj7y.mongodb.net/?authSource=admin&appName=lottery-validation-cluster
-      database: lottery_statistics_db
-      uuid-representation: STANDARD # This is to avoid issues with UUID representation between different drivers
-  cloud:
-    gcp:
-      parametermanager:
-        enabled: false # Disable Parameter Manager if not used due to potential conflicts with Secret Manager
-      secretmanager: # Setup for Google Cloud Secret Manager
-        enabled: true # Enable Secret Manager integration
-        project-id: lottery-validation-service # Project ID where secrets are stored
+  data:
+    mongodb:
+      uuid-representation: STANDARD
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
 
 springdoc:
   api-docs:
