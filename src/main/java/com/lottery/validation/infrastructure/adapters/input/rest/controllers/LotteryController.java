@@ -118,9 +118,8 @@ public class LotteryController {
     @Operation(summary = "Simulate lottery draw", description = "Simulates a lottery draw by checking numbers against historical draws")
     public ResponseEntity<SimulateLotteryDrawResponse> simulateLotteryDraw(
             @PathVariable LotteryType lotteryType,
-            @RequestHeader("X-Lottery-Numbers") List<Integer> numbers) {
-        log.info("[simulateLotteryDraw] Início | PathVariable: lotteryType={} | Header X-Lottery-Numbers: {}", 
-                lotteryType, lotteryType, numbers);
+            @RequestHeader(name = "X-Lottery-Numbers", required = true) List<Integer> numbers) {
+        log.info("[simulateLotteryDraw] Início | PathVariable: lotteryType={} | Header X-Lottery-Numbers: {}", lotteryType, numbers);
         var simulateDTO = simulateLotteryDrawInputPort.simulateLotteryDraw(lotteryType, numbers);
         
         // Mapear os matches do DTO para a resposta
