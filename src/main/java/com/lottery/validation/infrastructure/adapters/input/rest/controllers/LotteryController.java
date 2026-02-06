@@ -78,9 +78,10 @@ public class LotteryController {
 
     @PostMapping("/register")
     @Operation(summary = "Register lottery draws", description = "Fetches and registers lottery draws from external API")
-    public ResponseEntity<SaveLotteryResponse> registerLottery(@Valid @RequestBody RegisterLotteryRequest request) {
-        log.info("[registerLottery] Início | Request Body: {}", request);
-        var saveLotteryDTO = saveLotteryRestMapper.toDTO(request);
+    public ResponseEntity<SaveLotteryResponse> registerLottery(@Valid @RequestBody RegisterLotteryRequest request,
+                                                               @RequestParam(value = "waitTimeSeconds", defaultValue = "2") Integer waitTimeSeconds) {
+        log.info("[registerLottery] Início | Request Body: {}, waitTimeSeconds: {}", request, waitTimeSeconds);
+        var saveLotteryDTO = saveLotteryRestMapper.toDTO(request, waitTimeSeconds);
         var result = saveLotteryInputPort.saveLottery(saveLotteryDTO);
         var response = saveLotteryRestMapper.toResponse(result);
         return ResponseEntity.status(response.getDrawCount() > 0 ? HttpStatus.CREATED : HttpStatus.OK).body(response);

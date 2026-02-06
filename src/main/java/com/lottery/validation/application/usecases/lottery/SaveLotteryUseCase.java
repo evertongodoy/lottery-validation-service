@@ -44,6 +44,7 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
         log.info("[saveLottery] | saveLotteryDTO={}", saveLotteryDTO);
         var lotteryType = saveLotteryDTO.getLotteryType();
         var lotteryPath = getLotteryPath(lotteryType);
+        var waitTimeSeconds = saveLotteryDTO.getWaitTimeSeconds() != null ? saveLotteryDTO.getWaitTimeSeconds() : 3;
         
         // Buscar o último registro no banco de dados
         var nextDrawNumber = saveLotteryOutputPort
@@ -91,8 +92,8 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
                 break;
             }
             
-            // Aguardar 5 segundos antes da próxima requisição para evitar sobrecarga na API
-            LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(3));
+            // Aguardar antes da próxima requisição para evitar sobrecarga na API
+            LockSupport.parkNanos(TimeUnit.SECONDS.toNanos(waitTimeSeconds));
         }
 
         return new SaveLotteryResultDTO(processingDate, drawIds, drawIds.size());

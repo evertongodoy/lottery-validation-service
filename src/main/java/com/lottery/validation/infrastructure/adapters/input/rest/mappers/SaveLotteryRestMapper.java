@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class SaveLotteryRestMapper {
 
-    public SaveLotteryDTO toDTO(RegisterLotteryRequest request) {
-        log.info("[toDTO] | request={}", request);
+    public SaveLotteryDTO toDTO(RegisterLotteryRequest request, Integer waitTimeSeconds) {
+        log.info("[toDTO] | request={}, waitTimeSeconds={}", request, waitTimeSeconds);
         if (request == null) {
             return null;
         }
-        return new SaveLotteryDTO(request.getLotteryType());
+        return new SaveLotteryDTO(request.getLotteryType(), waitTimeSeconds);
     }
 
     public SaveLotteryResponse toResponse(SaveLotteryResultDTO result) {
