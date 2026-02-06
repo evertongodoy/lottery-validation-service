@@ -12,7 +12,7 @@ import com.lottery.validation.infrastructure.adapters.output.persistence.mongodb
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -30,32 +30,31 @@ public class VerifyUserDrawRepositoryAdapter implements VerifyUserDrawOutputPort
     private final UserDrawPersistenceMapper userDrawPersistenceMapper;
     private final WinnersUserDrawMongoRepository winnersUserDrawMongoRepository;
     private final WinnersUserDrawPersistenceMapper winnersUserDrawPersistenceMapper;
-    private final WebClient webClient;
+    private final RestTemplate restTemplate;
 
     public VerifyUserDrawRepositoryAdapter(UserDrawMongoRepository userDrawMongoRepository,
                                           UserDrawPersistenceMapper userDrawPersistenceMapper,
                                           WinnersUserDrawMongoRepository winnersUserDrawMongoRepository,
                                           WinnersUserDrawPersistenceMapper winnersUserDrawPersistenceMapper,
-                                          WebClient.Builder webClientBuilder) {
+                                          RestTemplate restTemplate) {
         this.userDrawMongoRepository = userDrawMongoRepository;
         this.userDrawPersistenceMapper = userDrawPersistenceMapper;
         this.winnersUserDrawMongoRepository = winnersUserDrawMongoRepository;
         this.winnersUserDrawPersistenceMapper = winnersUserDrawPersistenceMapper;
-        this.webClient = webClientBuilder.baseUrl(BASE_URL).build();
+        this.restTemplate = restTemplate;
     }
 
     @Override
     public Map<String, Object> findWebLottery(LotteryType lotteryType) {
         log.info("[findWebLottery] | lotteryType={}", lotteryType);
         String lotteryPath = getLotteryPath(lotteryType);
+        String url = String.format("%s/%s", BASE_URL, lotteryPath);
         
-        return Optional.ofNullable(
-            webClient.get()
-                .uri("/%s".formatted(lotteryPath))
-                .retrieve()
-                .bodyToMono(MAP_TYPE)
-                .block()
-        ).orElseThrow(() -> new RuntimeException("Failed to fetch latest draw from API"));
+        var response = restTemplate.getForObject(url, Map.class);
+        if (response == null) {
+            throw new RuntimeException("Failed to fetch latest draw from API");
+        }
+        return response;
     }
 
     @Override
