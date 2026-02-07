@@ -7,7 +7,11 @@ import com.lottery.validation.application.ports.output.UserOutputPort;
 import com.lottery.validation.domain.entities.UserDraw;
 import com.lottery.validation.domain.entities.Winners;
 import com.lottery.validation.domain.enums.LotteryType;
-import org.springframework.web.reactive.function.client.WebClient;
+import com.lottery.validation.infrastructure.config.EvolutionApiProperties;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
@@ -17,22 +21,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SendVerifiedUserDrawUseCase implements SendVerifiedUserDrawInputPort {
 
-    private static final String WHATSAPP_API_URL = "https://evolution-evolution-api.kdzex0.easypanel.host";
-    private static final String API_KEY = "429683C4C977415CAAFCCE10F7D57E11";
-
     private final SendVerifiedUserDrawOutputPort sendVerifiedUserDrawOutputPort;
     private final UserDrawOutputPort userDrawOutputPort;
     private final UserOutputPort userOutputPort;
-    private final WebClient webClient;
+    private final RestTemplate restTemplate;
+    private final EvolutionApiProperties evolutionApiProperties;
 
     public SendVerifiedUserDrawUseCase(SendVerifiedUserDrawOutputPort sendVerifiedUserDrawOutputPort,
                                       UserDrawOutputPort userDrawOutputPort,
                                       UserOutputPort userOutputPort,
-                                      WebClient.Builder webClientBuilder) {
+                                      RestTemplate restTemplate,
+                                      EvolutionApiProperties evolutionApiProperties) {
         this.sendVerifiedUserDrawOutputPort = sendVerifiedUserDrawOutputPort;
         this.userDrawOutputPort = userDrawOutputPort;
         this.userOutputPort = userOutputPort;
-        this.webClient = webClientBuilder.baseUrl(WHATSAPP_API_URL).build();
+        this.restTemplate = restTemplate;
+        this.evolutionApiProperties = evolutionApiProperties;
     }
 
     @Override
@@ -61,24 +65,25 @@ public class SendVerifiedUserDrawUseCase implements SendVerifiedUserDrawInputPor
             );
 
             try {
-                var requestBody = Map.of(
+                Map<String, Object> requestBody = Map.of(
                     "number", "55".concat(user.getCellphone()),
                     "text", textMessage,
                     "delay", 2000
                 );
 
-                webClient.post()
-                    .uri("/message/sendText/teste2")
-                    .header("apikey", API_KEY)
-                    .bodyValue(requestBody)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                headers.set("apikey", evolutionApiProperties.getKey());
+
+                HttpEntity<Map<String, Object>> request = new HttpEntity<>(requestBody, headers);
+                
+                String url = evolutionApiProperties.getUrl() + "/message/sendText/teste2";
+                restTemplate.postForObject(url, request, String.class);
 
                 sendVerifiedUserDrawOutputPort.updateMessageSentStatus(winner.getUuidDraw(), winner.getLotteryNumber(), Boolean.TRUE);
 
             } catch (Exception e) {
-                System.err.println("Erro ao enviar mensagem WhatsApp: " + e.getMessage());
+                log.error("Erro ao enviar mensagem WhatsApp: {}", e.getMessage(), e);
             }
         }
     }

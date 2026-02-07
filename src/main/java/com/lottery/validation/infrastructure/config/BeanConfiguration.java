@@ -53,8 +53,9 @@ public class BeanConfiguration {
 
     @Bean
     public SaveLotteryInputPort saveLotteryInputPort(SaveLotteryOutputPort saveLotteryOutputPort, 
-                                                      RestTemplate restTemplate) {
-        return new SaveLotteryUseCase(saveLotteryOutputPort, restTemplate);
+                                                      RestTemplate restTemplate,
+                                                      LotteryApiProperties lotteryApiProperties) {
+        return new SaveLotteryUseCase(saveLotteryOutputPort, restTemplate, lotteryApiProperties);
     }
 
     @Bean
@@ -82,8 +83,9 @@ public class BeanConfiguration {
             SendVerifiedUserDrawOutputPort sendVerifiedUserDrawOutputPort,
             UserDrawOutputPort userDrawOutputPort,
             UserOutputPort userOutputPort,
-            WebClient.Builder webClientBuilder) {
-        return new SendVerifiedUserDrawUseCase(sendVerifiedUserDrawOutputPort, userDrawOutputPort, userOutputPort, webClientBuilder);
+            RestTemplate restTemplate,
+            EvolutionApiProperties evolutionApiProperties) {
+        return new SendVerifiedUserDrawUseCase(sendVerifiedUserDrawOutputPort, userDrawOutputPort, userOutputPort, restTemplate, evolutionApiProperties);
     }
 
     @Bean
@@ -95,4 +97,6 @@ public class BeanConfiguration {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
+ 
 }

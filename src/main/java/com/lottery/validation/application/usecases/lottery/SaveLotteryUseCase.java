@@ -6,6 +6,7 @@ import com.lottery.validation.application.ports.input.SaveLotteryInputPort;
 import com.lottery.validation.application.ports.output.SaveLotteryOutputPort;
 import com.lottery.validation.domain.entities.Lottery;
 import com.lottery.validation.domain.enums.LotteryType;
+import com.lottery.validation.infrastructure.config.LotteryApiProperties;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -25,18 +26,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class SaveLotteryUseCase implements SaveLotteryInputPort {
-
-    private static final String BASE_URL = "https://servicebus2.caixa.gov.br/portaldeloterias/api";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final SaveLotteryOutputPort saveLotteryOutputPort;
     private final RestTemplate restTemplate;
+    private final LotteryApiProperties lotteryApiProperties;
 
     private static final ParameterizedTypeReference<Map<String, Object>> MAP_TYPE = new ParameterizedTypeReference<>() {};
 
-    public SaveLotteryUseCase(SaveLotteryOutputPort saveLotteryOutputPort, RestTemplate restTemplate) {
+    public SaveLotteryUseCase(SaveLotteryOutputPort saveLotteryOutputPort, RestTemplate restTemplate, LotteryApiProperties lotteryApiProperties) {
         this.saveLotteryOutputPort = saveLotteryOutputPort;
         this.restTemplate = restTemplate;
+        this.lotteryApiProperties = lotteryApiProperties;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
                 .orElse(1);
         
         // Buscar o ultimo sorteio disponível na API
-        var url = String.format("%s/%s", BASE_URL, lotteryPath);
+        var url = String.format("%s/%s", lotteryApiProperties.getUrl(), lotteryPath);
         var response = restTemplate.getForObject(url, Map.class);
         var latestDrawNumberFromApi = getIntegerValue(response, "numero");
         
@@ -68,7 +69,7 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
         while (nextDrawNumber <= latestDrawNumberFromApi) {
             
             final Integer currentDrawNumber = nextDrawNumber;
-            var drawUrl = String.format("%s/%s/%d", BASE_URL, lotteryPath, currentDrawNumber);
+            var drawUrl = String.format("%s/%s/%d", lotteryApiProperties.getUrl(), lotteryPath, currentDrawNumber);
             
             var lotteryData = restTemplate.getForObject(drawUrl, Map.class);
             

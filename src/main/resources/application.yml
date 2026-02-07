@@ -6,7 +6,7 @@ spring:
       uuid-representation: STANDARD
 
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT}
   servlet:
     context-path: /
 
@@ -16,3 +16,12 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
+
+evolution:
+  api:
+    url: ${EVOLUTION_API_URL}
+    key: ${EVOLUTION_API_KEY}
+
+caixa:
+  api:
+    url: ${CAIXA_API_URL}
