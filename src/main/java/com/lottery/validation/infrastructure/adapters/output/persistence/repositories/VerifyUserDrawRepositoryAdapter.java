@@ -9,6 +9,7 @@ import com.lottery.validation.infrastructure.adapters.output.persistence.mappers
 import com.lottery.validation.infrastructure.adapters.output.persistence.mappers.WinnersUserDrawPersistenceMapper;
 import com.lottery.validation.infrastructure.adapters.output.persistence.mongodb.UserDrawMongoRepository;
 import com.lottery.validation.infrastructure.adapters.output.persistence.mongodb.WinnersUserDrawMongoRepository;
+import com.lottery.validation.infrastructure.config.LotteryApiProperties;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,6 @@ import java.util.UUID;
 @Component
 public class VerifyUserDrawRepositoryAdapter implements VerifyUserDrawOutputPort {
 
-    private static final String BASE_URL = "https://servicebus2.caixa.gov.br/portaldeloterias/api";
     private static final ParameterizedTypeReference<Map<String, Object>> MAP_TYPE = new ParameterizedTypeReference<>() {};
 
     private final UserDrawMongoRepository userDrawMongoRepository;
@@ -30,24 +30,27 @@ public class VerifyUserDrawRepositoryAdapter implements VerifyUserDrawOutputPort
     private final WinnersUserDrawMongoRepository winnersUserDrawMongoRepository;
     private final WinnersUserDrawPersistenceMapper winnersUserDrawPersistenceMapper;
     private final RestTemplate restTemplate;
+    private final LotteryApiProperties lotteryApiProperties;
 
     public VerifyUserDrawRepositoryAdapter(UserDrawMongoRepository userDrawMongoRepository,
                                           UserDrawPersistenceMapper userDrawPersistenceMapper,
                                           WinnersUserDrawMongoRepository winnersUserDrawMongoRepository,
                                           WinnersUserDrawPersistenceMapper winnersUserDrawPersistenceMapper,
-                                          RestTemplate restTemplate) {
+                                          RestTemplate restTemplate,
+                                          LotteryApiProperties lotteryApiProperties) {
         this.userDrawMongoRepository = userDrawMongoRepository;
         this.userDrawPersistenceMapper = userDrawPersistenceMapper;
         this.winnersUserDrawMongoRepository = winnersUserDrawMongoRepository;
         this.winnersUserDrawPersistenceMapper = winnersUserDrawPersistenceMapper;
         this.restTemplate = restTemplate;
+        this.lotteryApiProperties = lotteryApiProperties;
     }
 
     @Override
     public Map<String, Object> findWebLottery(LotteryType lotteryType) {
         log.info("[findWebLottery] | lotteryType={}", lotteryType);
         String lotteryPath = getLotteryPath(lotteryType);
-        String url = String.format("%s/%s", BASE_URL, lotteryPath);
+        String url = String.format("%s/%s", lotteryApiProperties.getUrl(), lotteryPath);
         
         var response = restTemplate.getForObject(url, Map.class);
         if (response == null) {
