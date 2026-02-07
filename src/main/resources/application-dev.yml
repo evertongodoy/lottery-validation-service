@@ -10,3 +10,12 @@ spring:
         enabled: false
       secretmanager:
         enabled: false
+
+evolution:
+  api:
+    url: ${EVOLUTION_API_URL}
+    key: ${EVOLUTION_API_KEY}
+
+caixa:
+  api:
+    url: ${CAIXA_API_URL}

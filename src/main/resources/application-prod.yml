@@ -14,3 +14,12 @@ spring:
       secretmanager:
         enabled: true
         project-id: lottery-validation-service
+
+evolution:
+  api:
+    url: ${EVOLUTION_API_URL}
+    key: ${sm://EVOLUTION_API_KEY/1}
+
+caixa:
+  api:
+    url: ${CAIXA_API_URL}
