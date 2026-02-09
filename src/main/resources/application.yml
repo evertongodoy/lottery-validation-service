@@ -6,13 +6,14 @@ spring:
       uuid-representation: STANDARD
 
 server:
-  port: ${SERVER_PORT}
-  servlet:
-    context-path: /
+  port: ${SERVER_PORT:8080}
+  # Como você está em WebFlux, esse bloco é de stack servlet e pode ser ignorado/confundir:
+  #servlet:
+  #  context-path: /
 
 springdoc:
   api-docs:
-    path: /api-docs
+    path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
     enabled: true

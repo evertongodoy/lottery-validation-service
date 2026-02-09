@@ -74,9 +74,15 @@
         </dependency>
 
         <!-- SpringDoc OpenAPI (Swagger) -->
-        <dependency>
-        <groupId>org.springdoc</groupId>
+        <!-- Usando WebFlux (spring-boot-starter-webflux) mas adicionou o starter do SpringDoc para WebMVC (springdoc-openapi-starter-webmvc-ui). Esse é o principal motivo de “Swagger não sobe / não aparece” em projetos reativos. -->
+        <!--<dependency>
+            <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
 
