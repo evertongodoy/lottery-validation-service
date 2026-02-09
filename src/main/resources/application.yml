@@ -8,6 +8,7 @@ spring:
 server:
   port: ${SERVER_PORT:8080}
   # Como você está em WebFlux, esse bloco é de stack servlet e pode ser ignorado/confundir:
+  # Se você quer “context-path” no WebFlux, use base-path do Spring WebFlux (opcional) ou deixe sem.
   #servlet:
   #  context-path: /
 
