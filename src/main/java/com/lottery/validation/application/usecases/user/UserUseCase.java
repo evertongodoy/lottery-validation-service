@@ -36,6 +36,7 @@ public class UserUseCase implements UserInputPort {
         user.setRole(userDTO.getRole());
         user.setSubject(userDTO.getSubject());
         user.setCellphone(userDTO.getCellphone());
+        user.setActive(userDTO.getActive());
         user.setCreatedAt(LocalDateTime.now());
 
         // Salvar usuário
@@ -48,6 +49,7 @@ public class UserUseCase implements UserInputPort {
             savedUser.getRole(),
             savedUser.getSubject(),
             savedUser.getCellphone(),
+            savedUser.getActive(),
             savedUser.getCreatedAt()
         );
     }
@@ -66,6 +68,7 @@ public class UserUseCase implements UserInputPort {
             user.getRole(),
             user.getSubject(),
             user.getCellphone(),
+            user.getActive(),
             user.getCreatedAt()
         );
     }

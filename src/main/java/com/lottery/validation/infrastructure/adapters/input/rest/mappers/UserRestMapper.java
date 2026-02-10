@@ -11,13 +11,14 @@ import com.lottery.validation.infrastructure.adapters.input.rest.responses.UserR
 @Component
 public class UserRestMapper {
 
-    public UserDTO toDTO(CreateUserRequest request) {
+    public UserDTO toDTO(CreateUserRequest request, Boolean active) {
         log.info("[toDTO] | request={}", request);
         UserDTO dto = new UserDTO();
         dto.setName(request.getName());
         dto.setRole(request.getRole());
         dto.setSubject(request.getSubject());
         dto.setCellphone(request.getCellphone());
+        dto.setActive(active);
         return dto;
     }
 
@@ -28,6 +29,7 @@ public class UserRestMapper {
             dto.getName(),
             dto.getSubject(),
             dto.getCellphone(),
+            dto.getActive(),
             dto.getCreatedAt(),
             dto.getRole()
         );

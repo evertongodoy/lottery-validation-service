@@ -20,6 +20,7 @@ public class User {
     private UserRole role;
     private String subject;
     private String cellphone;
+    private Boolean active;
     private LocalDateTime createdAt;
 
 }

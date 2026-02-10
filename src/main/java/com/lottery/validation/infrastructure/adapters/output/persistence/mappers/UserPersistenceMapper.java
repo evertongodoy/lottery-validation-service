@@ -18,6 +18,7 @@ public class UserPersistenceMapper {
         entity.setRole(user.getRole());
         entity.setSubject(user.getSubject());
         entity.setCellphone(user.getCellphone());
+        entity.setActive(user.getActive());
         entity.setCreatedAt(user.getCreatedAt());
         return entity;
     }
@@ -30,6 +31,7 @@ public class UserPersistenceMapper {
         user.setRole(entity.getRole());
         user.setSubject(entity.getSubject());
         user.setCellphone(entity.getCellphone());
+        user.setActive(entity.getActive());
         user.setCreatedAt(entity.getCreatedAt());
         return user;
     }

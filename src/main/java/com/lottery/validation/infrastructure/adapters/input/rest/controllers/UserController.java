@@ -61,7 +61,7 @@ public class UserController {
     @Operation(summary = "Create a new user", description = "Creates a new user in the lottery validation system")
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
         log.info("[createUser] Início - Request Body: {}", request);
-        var userDTO = userRestMapper.toDTO(request);
+        var userDTO = userRestMapper.toDTO(request, false);
         var createdUser = userInputPort.createUser(userDTO);
         var response = userRestMapper.toResponse(createdUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
