@@ -8,7 +8,6 @@ import com.lottery.validation.domain.entities.Lottery;
 import com.lottery.validation.domain.enums.LotteryType;
 import com.lottery.validation.infrastructure.config.LotteryApiProperties;
 
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,8 +31,6 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
     private final SaveLotteryOutputPort saveLotteryOutputPort;
     private final RestTemplate restTemplate;
     private final LotteryApiProperties lotteryApiProperties;
-
-    private static final ParameterizedTypeReference<Map<String, Object>> MAP_TYPE = new ParameterizedTypeReference<>() {};
 
     public SaveLotteryUseCase(SaveLotteryOutputPort saveLotteryOutputPort, RestTemplate restTemplate, LotteryApiProperties lotteryApiProperties) {
         this.saveLotteryOutputPort = saveLotteryOutputPort;

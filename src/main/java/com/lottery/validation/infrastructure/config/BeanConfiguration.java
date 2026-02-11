@@ -11,6 +11,7 @@ import com.lottery.validation.application.ports.input.FindTopLotteryInputPort;
 import com.lottery.validation.application.ports.input.SaveLotteryInputPort;
 import com.lottery.validation.application.ports.input.SendVerifiedUserDrawInputPort;
 import com.lottery.validation.application.ports.input.SimulateLotteryDrawInputPort;
+import com.lottery.validation.application.ports.input.TokenInputPort;
 import com.lottery.validation.application.ports.input.UserDrawInputPort;
 import com.lottery.validation.application.ports.input.UserInputPort;
 import com.lottery.validation.application.ports.input.VerifyUserDrawInputPort;
@@ -29,6 +30,7 @@ import com.lottery.validation.application.usecases.lottery.SaveLotteryUseCase;
 import com.lottery.validation.application.usecases.lottery.SimulateLotteryDrawUseCase;
 import com.lottery.validation.application.usecases.user.FindMyDrawUseCase;
 import com.lottery.validation.application.usecases.user.SendVerifiedUserDrawUseCase;
+import com.lottery.validation.application.usecases.user.TokenUseCase;
 import com.lottery.validation.application.usecases.user.UserDrawUseCase;
 import com.lottery.validation.application.usecases.user.UserUseCase;
 import com.lottery.validation.application.usecases.user.VerifyUserDrawUseCase;
@@ -86,6 +88,11 @@ public class BeanConfiguration {
             RestTemplate restTemplate,
             EvolutionApiProperties evolutionApiProperties) {
         return new SendVerifiedUserDrawUseCase(sendVerifiedUserDrawOutputPort, userDrawOutputPort, userOutputPort, restTemplate, evolutionApiProperties);
+    }
+
+    @Bean
+    public TokenInputPort tokenInputPort(UserOutputPort userOutputPort, JwtProperties jwtProperties) {
+        return new TokenUseCase(userOutputPort, jwtProperties);
     }
 
     @Bean
