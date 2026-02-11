@@ -36,6 +36,8 @@ public class UserEntity {
     @Indexed
     private String cellphone;
     
+    private String password;
+    
     private Boolean active;
     
     private LocalDateTime createdAt;

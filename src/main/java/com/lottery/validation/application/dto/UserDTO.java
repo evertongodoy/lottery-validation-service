@@ -20,6 +20,7 @@ public class UserDTO {
     private UserRole role;
     private String subject;
     private String cellphone;
+    private String password;
     private Boolean active;
     private LocalDateTime createdAt;
 

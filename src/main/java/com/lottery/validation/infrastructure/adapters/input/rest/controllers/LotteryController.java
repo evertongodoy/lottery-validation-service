@@ -95,8 +95,7 @@ public class LotteryController {
             @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestParam(value = "orderBy", defaultValue = "lotteryNumber") String orderBy,
             @RequestParam(value = "direction", defaultValue = "ASC") String direction) {
-        log.info("[findLotteries] Início | Params: page={}, size={}, orderBy={}, direction={}", 
-                lotteryType, page, size, orderBy, direction);
+        log.info("[findLotteries] Início | Params: page={}, size={}, orderBy={}, direction={}", lotteryType, page, size, orderBy, direction);
         
         FindLotteryDTO findLotteryDTO = new FindLotteryDTO(lotteryType, page, size, orderBy, direction);
         var resultDTO = findLotteryInputPort.findLottery(findLotteryDTO);
@@ -142,8 +141,7 @@ public class LotteryController {
     @PostMapping("/verify-user-draws/lottery-type/{lotteryType}")
     @Operation(summary = "Verify user draws", description = "Verifies all active user draws against the latest lottery draw from web")
     public ResponseEntity<VerifyUserDrawWinnerResponse> verifyUserDraws(@PathVariable LotteryType lotteryType) {
-        log.info("[verifyUserDraws] Início | PathVariable: lotteryType={}", 
-                lotteryType, lotteryType);
+        log.info("[verifyUserDraws] Início | PathVariable: lotteryType={}", lotteryType, lotteryType);
         var winnersDTO = verifyUserDrawInputPort.verifyUserDraws(lotteryType);
         var response = verifyUserDrawWinnerRestMapper.toResponse(winnersDTO);
         return response.getTotalWinners() > 0 ?

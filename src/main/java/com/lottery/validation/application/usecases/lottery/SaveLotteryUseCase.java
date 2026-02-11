@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,7 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
             throw new RuntimeException("Failed to fetch latest draw number from API");
         }
 
-        var processingDate = LocalDate.now();
+        var processingDate = LocalDateTime.now();
         List<Integer> drawIds = new ArrayList<>();
 
         // Loop para buscar e salvar sorteios
@@ -100,7 +101,7 @@ public class SaveLotteryUseCase implements SaveLotteryInputPort {
         return new SaveLotteryResultDTO(processingDate, drawIds, drawIds.size());
     }
 
-    private Lottery createLotteryFromApiData(Map<String, Object> data, LotteryType lotteryType, LocalDate addAt) {
+    private Lottery createLotteryFromApiData(Map<String, Object> data, LotteryType lotteryType, LocalDateTime addAt) {
         Lottery lottery = new Lottery();
         lottery.setInternalId(UUID.randomUUID());
         lottery.setLotteryNumber(getIntegerValue(data, "numero"));

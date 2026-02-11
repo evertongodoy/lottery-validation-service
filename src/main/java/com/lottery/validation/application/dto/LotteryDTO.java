@@ -1,6 +1,7 @@
 package com.lottery.validation.application.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.lottery.validation.domain.enums.LotteryType;
@@ -17,7 +18,7 @@ public class LotteryDTO {
     private String id;
     private Integer lotteryNumber;
     private Integer nextLotteryNumber;
-    private LocalDate addAt;
+    private LocalDateTime addAt;
     private LocalDate drawDate;
     private List<Integer> drawnNumbers;
     private List<Integer> sortedDrawNumbers;

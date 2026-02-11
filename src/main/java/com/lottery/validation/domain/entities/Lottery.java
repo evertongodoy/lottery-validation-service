@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public class Lottery {
     private UUID internalId;
     private Integer lotteryNumber;
     private Integer nextLotteryNumber;
-    private LocalDate addAt;
+    private LocalDateTime addAt;
     private LocalDate drawDate;
     private List<Integer> drawnNumbers;
     private List<Integer> sortedDrawNumbers;

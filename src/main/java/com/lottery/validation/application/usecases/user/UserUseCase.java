@@ -25,51 +25,53 @@ public class UserUseCase implements UserInputPort {
     public UserDTO createUser(UserDTO userDTO) {
         log.info("[createUser] | userDTO={}", userDTO);
         // Validar se o subject já existe
-        if (userOutputPort.existsBySubject(userDTO.getSubject())) {
+        if (userOutputPort.existsBySubject(userDTO.getSubject().trim())) {
             throw new DuplicateSubjectException(userDTO.getSubject());
         }
 
         // Criar entidade de domínio
-        var user = new User();
-        user.setUuid(UUID.randomUUID());
-        user.setName(userDTO.getName());
-        user.setRole(userDTO.getRole());
-        user.setSubject(userDTO.getSubject());
-        user.setCellphone(userDTO.getCellphone());
-        user.setActive(userDTO.getActive());
-        user.setCreatedAt(LocalDateTime.now());
+        var user = User.builder()
+            .uuid(UUID.randomUUID())
+            .name(userDTO.getName())
+            .role(userDTO.getRole())
+            .subject(userDTO.getSubject())
+            .cellphone(userDTO.getCellphone())
+            .password(userDTO.getPassword())
+            .active(userDTO.getActive())
+            .createdAt(LocalDateTime.now()).build();
 
         // Salvar usuário
         var savedUser = userOutputPort.save(user);
         
         // Retornar DTO
-        return new UserDTO(
-            savedUser.getUuid(),
-            savedUser.getName(),
-            savedUser.getRole(),
-            savedUser.getSubject(),
-            savedUser.getCellphone(),
-            savedUser.getActive(),
-            savedUser.getCreatedAt()
-        );
+        return UserDTO.builder()
+            .uuid(savedUser.getUuid())
+            .name(savedUser.getName())
+            .role(savedUser.getRole())
+            .subject(savedUser.getSubject())
+            .cellphone(savedUser.getCellphone())
+            .password(savedUser.getPassword())
+            .active(savedUser.getActive())
+            .createdAt(savedUser.getCreatedAt())
+        .build();
     }
 
     @Override
     public UserDTO getSubjectData(String subject) {
         log.info("[getSubjectData] | subject={}", subject);
-        // Buscar usuário pelo subject
+        // Find user by subject
         var user = userOutputPort.findBySubject(subject)
                 .orElseThrow(() -> new RuntimeException("Subject informado nao existe"));
 
-        // Retornar DTO
-        return new UserDTO(
-            user.getUuid(),
-            user.getName(),
-            user.getRole(),
-            user.getSubject(),
-            user.getCellphone(),
-            user.getActive(),
-            user.getCreatedAt()
-        );
+        return UserDTO.builder()
+            .uuid(user.getUuid())
+            .name(user.getName())
+            .role(user.getRole())
+            .subject(user.getSubject())
+            .cellphone(user.getCellphone())
+            .password(user.getPassword())
+            .active(user.getActive())
+            .createdAt(user.getCreatedAt())
+        .build();
     }
 }

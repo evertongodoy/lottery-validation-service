@@ -1,6 +1,9 @@
 package com.lottery.validation.infrastructure.adapters.input.rest.mappers;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Base64;
+
 import org.springframework.stereotype.Component;
 
 import com.lottery.validation.application.dto.UserDTO;
@@ -18,6 +21,8 @@ public class UserRestMapper {
         dto.setRole(request.getRole());
         dto.setSubject(request.getSubject());
         dto.setCellphone(request.getCellphone());
+        // Convert password to Base64 due to security reasons
+        dto.setPassword(Base64.getEncoder().encodeToString(request.getPassword().getBytes()));
         dto.setActive(active);
         return dto;
     }
@@ -29,6 +34,7 @@ public class UserRestMapper {
             dto.getName(),
             dto.getSubject(),
             dto.getCellphone(),
+            dto.getPassword(),
             dto.getActive(),
             dto.getCreatedAt(),
             dto.getRole()

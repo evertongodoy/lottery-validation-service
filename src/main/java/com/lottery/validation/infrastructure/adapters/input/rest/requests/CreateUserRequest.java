@@ -29,4 +29,7 @@ public class CreateUserRequest {
     @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$", message = "Invalid cellphone format")
     private String cellphone;
 
+    @NotBlank(message = "Password is required")
+    private String password;
+
 }

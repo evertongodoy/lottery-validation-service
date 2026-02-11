@@ -19,6 +19,7 @@ public class UserResponse {
     private String name;
     private String subject;
     private String cellphone;
+    private String password;
     private Boolean active;
     private LocalDateTime createdAt;
     private UserRole role;
