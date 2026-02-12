@@ -82,6 +82,7 @@ public class UserController {
 
     @PostMapping("/create-my-draw")
     @Operation(summary = "Create user draw", description = "Creates a new lottery draw for a user")
+    @RequireRole({UserRole.USER, UserRole.ADMIN})
     public ResponseEntity<UserDrawResponse> createUserDraw(@Valid @RequestBody CreateUserDrawRequest request) {
         log.info("[createUserDraw] Início - Request Body: {}", request);
         var userDrawDTO = userDrawRestMapper.toDTO(request);
