@@ -10,12 +10,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 
 import com.lottery.validation.application.dto.FindMyDrawRequestDTO;
 import com.lottery.validation.application.ports.input.FindMyDrawInputPort;
 import com.lottery.validation.application.ports.input.UserDrawInputPort;
 import com.lottery.validation.application.ports.input.UserInputPort;
 import com.lottery.validation.domain.enums.LotteryType;
+import com.lottery.validation.domain.enums.UserRole;
+import com.lottery.validation.infrastructure.adapters.input.rest.annotations.RequireRole;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.FindMyDrawRestMapper;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.UserDrawRestMapper;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.UserRestMapper;
@@ -68,8 +71,9 @@ public class UserController {
     }
 
     @GetMapping("/subject/{subject}")
-    @Operation(summary = "Get user by subject", description = "Retrieves a user by their subject identifier")
-    public ResponseEntity<UserResponse> getUserBySubject(@PathVariable String subject) {
+    @Operation(summary = "Get user by subject", description = "Retrieves a user by their subject identifier (ADMIN only)")
+    @RequireRole(UserRole.ADMIN)
+    public ResponseEntity<UserResponse> getUserBySubject(@PathVariable String subject, ServerWebExchange exchange) {
         log.info("[getUserBySubject] Início - PathVariable: subject={}", subject);
         var userDTO = userInputPort.getSubjectData(subject);
         var response = userRestMapper.toResponse(userDTO);

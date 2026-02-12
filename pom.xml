@@ -74,7 +74,8 @@
         </dependency>
 
         <!-- SpringDoc OpenAPI (Swagger) -->
-        <!-- Usando WebFlux (spring-boot-starter-webflux) mas adicionou o starter do SpringDoc para WebMVC (springdoc-openapi-starter-webmvc-ui). Esse é o principal motivo de “Swagger não sobe / não aparece” em projetos reativos. -->
+        <!-- Usando WebFlux (spring-boot-starter-webflux) mas adicionou o starter do SpringDoc para WebMVC (springdoc-openapi-starter-webmvc-ui). 
+             Esse é o principal motivo de “Swagger não sobe / não aparece” em projetos reativos. -->
         <!--<dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -152,6 +153,12 @@
             <artifactId>jjwt-jackson</artifactId>
             <version>0.12.6</version>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- Spring AOP for JWT validation interceptor -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
  
     </dependencies>

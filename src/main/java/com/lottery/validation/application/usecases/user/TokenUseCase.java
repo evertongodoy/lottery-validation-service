@@ -4,8 +4,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-import javax.crypto.SecretKey;
-
 import com.lottery.validation.application.dto.CreateTokenDTO;
 import com.lottery.validation.application.dto.TokenDTO;
 import com.lottery.validation.application.ports.input.TokenInputPort;
@@ -32,12 +30,12 @@ public class TokenUseCase implements TokenInputPort {
     public TokenDTO createToken(CreateTokenDTO dto) {
         log.info("[createToken] | dto={}", dto);
         
-        var user = userOutputPort.findBySubject(dto.getSubject())
-                .orElseThrow(() -> new BusinessException("Subject ou password incorretos"));
 
-        if (!user.getPassword().equals(dto.getPassword())) {
-            throw new BusinessException("Subject ou password incorretos");
-        }
+        var user = userOutputPort.findBySubject(dto.getSubject())
+                        .filter(usr -> Boolean.TRUE.equals(usr.getActive()))
+                        .filter(usr -> dto.getPassword().equalsIgnoreCase(usr.getPassword()))
+                        .filter(usr -> dto.getSubject().equalsIgnoreCase(usr.getSubject()))
+                        .orElseThrow(() -> new BusinessException("Credenciais inválidas ou usuário inativo"));
 
         // Gerar token JWT
         var token = generateJwtToken(user.getSubject(), user.getRole().name());
