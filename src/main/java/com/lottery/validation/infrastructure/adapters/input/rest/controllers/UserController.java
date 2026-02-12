@@ -92,13 +92,15 @@ public class UserController {
 
     @GetMapping("/my-draw/{lotteryType}")
     @Operation(summary = "Find my draws", description = "Retrieves user draws from database with pagination")
+    @RequireRole({UserRole.USER, UserRole.ADMIN})
     public ResponseEntity<FindMyDrawResponse> findMyDraw(
             @PathVariable LotteryType lotteryType,
             @RequestHeader("X-Subject") String subject,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestParam(value = "orderBy", defaultValue = "addAt") String orderBy,
-            @RequestParam(value = "direction", defaultValue = "DESC") String direction) {
+            @RequestParam(value = "direction", defaultValue = "DESC") String direction,
+            ServerWebExchange exchange) {
         log.info("[findMyDraw] Início - PathVariable: lotteryType={} | Header X-Subject: {} | Params: page={}, size={}, orderBy={}, direction={}", 
                 lotteryType, subject, page, size, orderBy, direction);
         FindMyDrawRequestDTO findMyDrawRequestDTO = new FindMyDrawRequestDTO(lotteryType, page, size, orderBy, direction, subject);
