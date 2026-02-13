@@ -22,6 +22,7 @@ public class UserDrawRestMapper {
         dto.setSubject(request.getSubject());
         dto.setActive(true);
         dto.setAddAt(LocalDate.now());
+        dto.setNote(request.getNote());
         return dto;
     }
 
@@ -34,6 +35,7 @@ public class UserDrawRestMapper {
                 .uuidSubject(dto.getUuidSubject())
                 .active(dto.getActive())
                 .addAt(dto.getAddAt())
+                .note(dto.getNote())
                 .build();
     }
 }

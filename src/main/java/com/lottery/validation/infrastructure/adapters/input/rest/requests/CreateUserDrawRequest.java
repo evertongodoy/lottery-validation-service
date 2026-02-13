@@ -5,6 +5,8 @@ import java.util.List;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,5 +28,10 @@ public class CreateUserDrawRequest {
 
     @NotBlank(message = "Subject is required")
     private String subject;
+
+    @Size(max = 255, message = "Note must not exceed 255 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s.,;:!?()\"'\\-áàâãéèêíïóôõöúçñÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ]*$", 
+             message = "Note contains invalid characters")
+    private String note;
 
 }

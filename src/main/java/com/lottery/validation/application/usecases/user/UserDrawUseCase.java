@@ -57,6 +57,7 @@ public class UserDrawUseCase implements UserDrawInputPort {
         userDraw.setUuidSubject(user.getUuid());
         userDraw.setActive(true);
         userDraw.setAddAt(LocalDate.now());
+        userDraw.setNote(userDrawRequestDTO.getNote());
 
         // Salvar o jogo
         var savedUserDraw = userDrawOutputPort.save(userDraw);
@@ -69,6 +70,7 @@ public class UserDrawUseCase implements UserDrawInputPort {
                 .uuidSubject(savedUserDraw.getUuidSubject())
                 .active(savedUserDraw.getActive())
                 .addAt(savedUserDraw.getAddAt())
+                .note(savedUserDraw.getNote())
                 .build();
     }
 }

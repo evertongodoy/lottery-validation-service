@@ -20,4 +20,5 @@ public class UserDrawRequestDTO {
     private String subject;
     private Boolean active;
     private LocalDate addAt;
+    private String note;
 }

@@ -35,5 +35,7 @@ public class UserDrawEntity {
     private Boolean active;
     
     private LocalDate addAt;
+    
+    private String note;
 
 }

@@ -19,6 +19,7 @@ public class UserDrawPersistenceMapper {
         entity.setUuidSubject(userDraw.getUuidSubject());
         entity.setActive(userDraw.getActive());
         entity.setAddAt(userDraw.getAddAt());
+        entity.setNote(userDraw.getNote());
         return entity;
     }
 
@@ -31,6 +32,7 @@ public class UserDrawPersistenceMapper {
         userDraw.setUuidSubject(entity.getUuidSubject());
         userDraw.setActive(entity.getActive());
         userDraw.setAddAt(entity.getAddAt());
+        userDraw.setNote(entity.getNote());
         return userDraw;
     }
 }

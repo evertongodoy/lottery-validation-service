@@ -36,6 +36,7 @@ public class FindMyDrawRestMapper {
                 .uuidSubject(userDraw.getUuidSubject())
                 .active(userDraw.getActive())
                 .addAt(userDraw.getAddAt())
+                .note(userDraw.getNote())
                 .build();
     }
 }

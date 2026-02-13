@@ -22,4 +22,5 @@ public class UserDrawResponse {
     private UUID uuidSubject;
     private Boolean active;
     private LocalDate addAt;
+    private String note;
 }
