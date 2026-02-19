@@ -18,7 +18,7 @@ spring:
 evolution:
   api:
     url: ${EVOLUTION_API_URL}
-    key: ${sm://EVOLUTION_API_KEY/1}
+    key: ${sm://EVOLUTION_API_KEY/2}
 
 caixa:
   api:

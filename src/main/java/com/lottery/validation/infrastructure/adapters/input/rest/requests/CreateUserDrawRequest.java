@@ -23,7 +23,7 @@ public class CreateUserDrawRequest {
     @NotEmpty(message = "Draw numbers are required")
     private List<Integer> drawNumbers;
 
-    @NotNull(message = "Lottery type is required")
+    @NotNull(message = "Lottery type LOTOFACIL or MEGASENA is required")
     private LotteryType lotteryType;
 
     @NotBlank(message = "Subject is required")
