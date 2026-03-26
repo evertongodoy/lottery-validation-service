@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Header Fragment -->
+    <header th:fragment="header" class="bg-white dark:bg-gray-800 shadow-md transition-colors duration-300">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-dice text-3xl text-primary-600 dark:text-primary-400"></i>
+                    <a th:href="@{/web/home}" class="text-2xl font-bold text-gray-800 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                        Estatísticas de Loterias
+                    </a>
+                </div>
+                
+                <!-- Navigation Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a th:href="@{/web/home}" 
+                       class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">
+                        <i class="fas fa-home mr-2"></i>Home
+                    </a>
+                    
+                    <a th:href="@{/web/simulate}" 
+                       class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">
+                        <i class="fas fa-gamepad mr-2"></i>Simular
+                    </a>
+                    
+                    <!-- Authenticated Only Menu Items -->
+                    <div th:if="${isAuthenticated}" class="flex items-center space-x-6">
+                        <a href="#" 
+                           class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">
+                            <i class="fas fa-chart-line mr-2"></i>Estatísticas
+                        </a>
+                        
+                        <a href="#" 
+                           class="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">
+                            <i class="fas fa-user-circle mr-2"></i>Minha Conta
+                        </a>
+                        
+                        <button id="logoutBtn" 
+                                class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                        </button>
+                    </div>
+                    
+                    <!-- Not Authenticated -->
+                    <div th:unless="${isAuthenticated}" class="flex items-center space-x-4">
+                        <a href="#" 
+                           class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Login
+                        </a>
+                    </div>
+                    
+                    <!-- Dark Mode Toggle -->
+                    <button id="themeToggle" 
+                            class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                            aria-label="Toggle dark mode">
+                        <i class="fas fa-moon text-gray-700 dark:text-yellow-300" id="themeIcon"></i>
+                    </button>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 space-y-3">
+                <a th:href="@{/web/home}" 
+                   class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                
+                <a th:href="@{/web/simulate}" 
+                   class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                    <i class="fas fa-gamepad mr-2"></i>Simular
+                </a>
+                
+                <div th:if="${isAuthenticated}" class="space-y-3">
+                    <a href="#" 
+                       class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                        <i class="fas fa-chart-line mr-2"></i>Estatísticas
+                    </a>
+                    
+                    <a href="#" 
+                       class="block py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                        <i class="fas fa-user-circle mr-2"></i>Minha Conta
+                    </a>
+                    
+                    <button id="logoutBtnMobile" 
+                            class="w-full text-left py-2 text-red-500 hover:text-red-600 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                    </button>
+                </div>
+                
+                <div th:unless="${isAuthenticated}">
+                    <a href="#" 
+                       class="block py-2 px-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-center">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </a>
+                </div>
+                
+                <!-- Mobile Dark Mode Toggle -->
+                <button id="themeToggleMobile" 
+                        class="w-full text-left py-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                    <i class="fas fa-moon mr-2" id="themeIconMobile"></i>
+                    <span id="themeLabelMobile">Modo Escuro</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+</body>
+</html>

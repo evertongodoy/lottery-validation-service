@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Resultado da Simulação</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/lottery-balls.css}">
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300">
+    
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header}"></div>
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        
+        <!-- Page Title -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
+                <i class="fas fa-trophy text-yellow-500 mr-3"></i>
+                Resultado da Simulação
+            </h1>
+        </div>
+        
+        <!-- Your Numbers -->
+        <div class="max-w-6xl mx-auto mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                    <i class="fas fa-star mr-3 text-yellow-500"></i>
+                    Seus Números - <span th:text="${lotteryType}" class="ml-2 text-primary-600 dark:text-primary-400">LOTOFACIL</span>
+                </h2>
+                
+                <div class="flex flex-wrap gap-3 justify-center bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+                    <span th:each="num : ${selectedNumbers}" 
+                          class="lottery-ball-result text-xl font-bold px-4 py-2 bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-full shadow-lg">
+                        <span th:text="${num}">15</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Summary -->
+        <div class="max-w-6xl mx-auto mb-8">
+            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl shadow-xl p-8 text-white">
+                <div class="text-center">
+                    <i class="fas fa-chart-line text-5xl mb-4"></i>
+                    <h2 class="text-3xl font-bold mb-2">
+                        <span th:text="${#lists.size(matches)}">0</span> Sorteios Encontrados
+                    </h2>
+                    <p class="text-lg opacity-90">
+                        Seus números foram comparados com sorteios anteriores
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Matches List -->
+        <div class="max-w-6xl mx-auto mb-8" th:if="${matches != null and #lists.size(matches) > 0}">
+            
+            <!-- Filter Section -->
+            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-6">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center">
+                            <i class="fas fa-filter mr-2"></i>
+                            Filtrar Resultados
+                        </h3>
+                        <p class="text-sm text-blue-700 dark:text-blue-400">
+                            Exiba apenas os jogos que atingiram o número mínimo de acertos para premiação
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <label for="minMatches" class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                            Acertos mínimos:
+                        </label>
+                        <select id="minMatches" 
+                                class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg font-medium focus:ring-2 focus:ring-primary-500">
+                            <option value="0">Todos os resultados</option>
+                            
+                            <!-- Lotofácil Options -->
+                            <option value="11" th:if="${lotteryType.name() == 'LOTOFACIL'}">11+ acertos</option>
+                            <option value="12" th:if="${lotteryType.name() == 'LOTOFACIL'}">12+ acertos</option>
+                            <option value="13" th:if="${lotteryType.name() == 'LOTOFACIL'}">13+ acertos</option>
+                            <option value="14" th:if="${lotteryType.name() == 'LOTOFACIL'}">14+ acertos</option>
+                            <option value="15" th:if="${lotteryType.name() == 'LOTOFACIL'}">15 acertos (Prêmio Principal)</option>
+                            
+                            <!-- Mega-Sena Options -->
+                            <option value="4" th:if="${lotteryType.name() == 'MEGASENA'}">4+ acertos (Quadra)</option>
+                            <option value="5" th:if="${lotteryType.name() == 'MEGASENA'}">5+ acertos (Quina)</option>
+                            <option value="6" th:if="${lotteryType.name() == 'MEGASENA'}">6 acertos (Sena)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Header with pagination controls -->
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
+                    <i class="fas fa-list-ol mr-3 text-primary-600 dark:text-primary-400"></i>
+                    Coincidências Encontradas
+                </h2>
+                
+                <!-- Pagination info and items per page -->
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm text-gray-600 dark:text-gray-400">
+                        Exibindo <span id="currentRangeStart">1</span>-<span id="currentRangeEnd">10</span> 
+                        de <span id="totalMatches" th:text="${#lists.size(matches)}">0</span>
+                    </div>
+                    <select id="itemsPerPage" 
+                            class="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-primary-500">
+                        <option value="10">10 por página</option>
+                        <option value="20">20 por página</option>
+                        <option value="50">50 por página</option>
+                        <option value="100">100 por página</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Matches container -->
+            <div id="matchesContainer" class="space-y-4">
+                <div th:each="match, iterStat : ${matches}" 
+                     th:attr="data-index=${iterStat.index},data-matches=${match.totalMatches}"
+                     class="match-item bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    
+                    <!-- Match Header -->
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-4">
+                            <span class="text-3xl font-bold text-gray-400 dark:text-gray-600">
+                                #<span class="match-display-number" th:text="${iterStat.index + 1}">1</span>
+                            </span>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white">
+                                    Concurso <span th:text="${match.lotteryNumber}">2500</span>
+                                </h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-calendar-alt mr-2"></i>
+                                    <span th:text="${#temporals.format(match.drawDate, 'dd/MM/yyyy')}">25/03/2026</span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="text-right">
+                            <div class="inline-block px-6 py-3 rounded-xl"
+                                 th:classappend="${match.totalMatches >= 11 ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : (match.totalMatches >= 6 ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300')}">
+                                <div class="text-3xl font-bold" th:text="${match.totalMatches}">12</div>
+                                <div class="text-xs uppercase font-semibold">Acertos</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Draw Numbers -->
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 font-medium">
+                            <i class="fas fa-dice mr-2"></i>Números Sorteados:
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span th:each="drawNum : ${match.drawNumbers}" 
+                                  class="lottery-ball-small"
+                                  th:classappend="${#lists.contains(selectedNumbers, drawNum)} ? 'lottery-ball-match' : 'lottery-ball-no-match'">
+                                <span th:text="${drawNum}">5</span>
+                            </span>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Pagination Controls -->
+            <div class="mt-8 flex items-center justify-center space-x-2">
+                <button id="firstPageBtn" 
+                        class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-angle-double-left"></i>
+                </button>
+                
+                <button id="prevPageBtn" 
+                        class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+                
+                <div id="paginationNumbers" class="flex items-center space-x-2">
+                    <!-- Page numbers will be inserted here by JavaScript -->
+                </div>
+                
+                <button id="nextPageBtn" 
+                        class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-angle-right"></i>
+                </button>
+                
+                <button id="lastPageBtn" 
+                        class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-angle-double-right"></i>
+                </button>
+            </div>
+            
+        </div>
+        
+        <!-- No Matches -->
+        <div class="max-w-4xl mx-auto" th:if="${matches == null or #lists.size(matches) == 0}">
+            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-8 text-center">
+                <i class="fas fa-search text-5xl text-yellow-500 mb-4"></i>
+                <h3 class="text-2xl font-bold text-yellow-800 dark:text-yellow-300 mb-2">
+                    Nenhuma Coincidência Encontrada
+                </h3>
+                <p class="text-yellow-700 dark:text-yellow-400">
+                    Seus números não coincidiram com nenhum sorteio anterior no banco de dados.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="max-w-4xl mx-auto mt-12 text-center space-x-4">
+            <a th:href="@{/web/simulate}" 
+               class="inline-block px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300">
+                <i class="fas fa-redo mr-2"></i>
+                Nova Simulação
+            </a>
+            
+            <a th:href="@{/web/home}" 
+               class="inline-block px-8 py-4 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300">
+                <i class="fas fa-home mr-2"></i>
+                Voltar ao Início
+            </a>
+        </div>
+        
+    </main>
+    
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    
+    <!-- Scripts -->
+    <script th:src="@{/js/theme-toggle.js}"></script>
+    <script th:src="@{/js/menu-mobile.js}"></script>
+    <script th:src="@{/js/results-pagination.js}"></script>
+    
+</body>
+</html>

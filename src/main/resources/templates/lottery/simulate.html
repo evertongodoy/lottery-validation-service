@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Simulação de Loteria</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/lottery-balls.css}">
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300">
+    
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header}"></div>
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        
+        <!-- Page Title -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
+                <i class="fas fa-gamepad text-primary-600 dark:text-primary-400 mr-3"></i>
+                Simulação de Loteria
+            </h1>
+            <p class="text-lg text-gray-600 dark:text-gray-300">
+                Escolha o tipo de loteria e selecione seus números da sorte!
+            </p>
+        </div>
+        
+        <!-- Error Message -->
+        <div th:if="${error}" class="max-w-4xl mx-auto mb-6">
+            <div class="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-6 py-4 rounded-xl">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle text-2xl mr-4"></i>
+                    <span th:text="${error}">Erro ao processar simulação</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lottery Type Selection -->
+        <div class="max-w-4xl mx-auto mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                    <i class="fas fa-list-alt mr-3 text-primary-600 dark:text-primary-400"></i>
+                    Escolha o Tipo de Loteria
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="selectLotteryType('LOTOFACIL')" 
+                            id="btn-LOTOFACIL"
+                            class="lottery-type-btn p-6 rounded-xl border-2 border-gray-300 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-400 transition-all duration-300 text-left">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
+                                    <i class="fas fa-dice-five mr-2 text-primary-600 dark:text-primary-400"></i>
+                                    Lotofácil
+                                </h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    25 números disponíveis (1 a 25)
+                                </p>
+                                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                    Recomendado: 15 números
+                                </p>
+                            </div>
+                            <i class="fas fa-check-circle text-3xl text-green-500 hidden lottery-check"></i>
+                        </div>
+                    </button>
+                    
+                    <button onclick="selectLotteryType('MEGASENA')" 
+                            id="btn-MEGASENA"
+                            class="lottery-type-btn p-6 rounded-xl border-2 border-gray-300 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-400 transition-all duration-300 text-left">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
+                                    <i class="fas fa-gem mr-2 text-accent-600 dark:text-accent-400"></i>
+                                    Mega-Sena
+                                </h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    60 números disponíveis (1 a 60)
+                                </p>
+                                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                    Recomendado: 6 números
+                                </p>
+                            </div>
+                            <i class="fas fa-check-circle text-3xl text-green-500 hidden lottery-check"></i>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Number Selection Area -->
+        <div id="numberSelectionArea" class="max-w-6xl mx-auto mb-8 hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+                
+                <!-- Selected Numbers Display -->
+                <div class="mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white flex items-center">
+                            <i class="fas fa-check-double mr-3 text-green-600 dark:text-green-400"></i>
+                            Números Selecionados
+                            <span id="selectedCount" class="ml-3 px-4 py-1 bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-full text-lg font-bold">
+                                0
+                            </span>
+                        </h2>
+                        
+                        <button onclick="clearSelection()" 
+                                class="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors font-medium">
+                            <i class="fas fa-trash mr-2"></i>Limpar
+                        </button>
+                    </div>
+                    
+                    <div id="selectedNumbersDisplay" 
+                         class="min-h-[60px] bg-gray-50 dark:bg-gray-700 rounded-xl p-4 flex flex-wrap gap-3 items-center justify-center">
+                        <span class="text-gray-400 dark:text-gray-500 italic">
+                            Nenhum número selecionado
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Number Grid -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center">
+                        <i class="fas fa-th mr-3 text-primary-600 dark:text-primary-400"></i>
+                        Selecione os Números
+                    </h3>
+                    
+                    <div id="numberGrid" class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-3">
+                        <!-- Numbers will be generated by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button onclick="submitSimulation()" 
+                            id="submitBtn"
+                            class="px-12 py-4 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white text-lg font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                            disabled>
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Simular Loteria
+                    </button>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
+                        * Você pode selecionar quantos números quiser
+                    </p>
+                </div>
+                
+            </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
+                <h3 class="text-lg font-bold text-blue-800 dark:text-blue-300 mb-3 flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Como Funciona?
+                </h3>
+                <ol class="space-y-2 text-blue-700 dark:text-blue-300 text-sm">
+                    <li><strong>1.</strong> Escolha o tipo de loteria (Lotofácil ou Mega-Sena)</li>
+                    <li><strong>2.</strong> Selecione os números clicando nas bolas</li>
+                    <li><strong>3.</strong> Clique em "Simular Loteria" para ver os resultados</li>
+                    <li><strong>4.</strong> A simulação compara seus números com sorteios anteriores</li>
+                </ol>
+            </div>
+        </div>
+        
+    </main>
+    
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    
+    <!-- Scripts -->
+    <script th:src="@{/js/theme-toggle.js}"></script>
+    <script th:src="@{/js/menu-mobile.js}"></script>
+    <script th:src="@{/js/lottery-simulator.js}"></script>
+    
+</body>
+</html>

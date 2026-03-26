@@ -1,0 +1,232 @@
+/* Lottery Balls - Specific Styles */
+
+/* Lottery Ball Base Style */
+.lottery-ball {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #ffffff, #e8e8e8);
+    border: 3px solid #d1d5db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    font-weight: 700;
+    font-size: 18px;
+    color: #374151;
+}
+
+.dark .lottery-ball {
+    background: linear-gradient(145deg, #4b5563, #374151);
+    border-color: #6b7280;
+    color: #e5e7eb;
+}
+
+.lottery-ball:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+    border-color: #0ea5e9;
+}
+
+.dark .lottery-ball:hover {
+    border-color: #38bdf8;
+}
+
+.lottery-ball:active {
+    transform: scale(0.95);
+}
+
+/* Selected Ball */
+.lottery-ball-selected {
+    background: linear-gradient(145deg, #0ea5e9, #0284c7) !important;
+    border-color: #075985 !important;
+    color: white !important;
+    box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.4), 0 4px 6px -2px rgba(14, 165, 233, 0.2);
+    transform: scale(1.05);
+}
+
+.dark .lottery-ball-selected {
+    background: linear-gradient(145deg, #38bdf8, #0ea5e9) !important;
+    border-color: #0284c7 !important;
+}
+
+/* Ball Number */
+.lottery-ball-number {
+    font-size: 20px;
+    font-weight: 800;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.lottery-ball-selected .lottery-ball-number {
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Display Selected Numbers */
+.lottery-ball-display {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #0ea5e9, #0284c7);
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dark .lottery-ball-display {
+    background: linear-gradient(145deg, #38bdf8, #0ea5e9);
+}
+
+/* Result Page Balls */
+.lottery-ball-result {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    min-height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Small balls for draw numbers */
+.lottery-ball-small {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+/* Matched number */
+.lottery-ball-match {
+    background: linear-gradient(145deg, #10b981, #059669);
+    color: white;
+    border: 3px solid #047857;
+    animation: matchPulse 1s ease-in-out;
+}
+
+.dark .lottery-ball-match {
+    background: linear-gradient(145deg, #34d399, #10b981);
+    border-color: #059669;
+}
+
+/* No match */
+.lottery-ball-no-match {
+    background: linear-gradient(145deg, #e5e7eb, #d1d5db);
+    color: #6b7280;
+    border: 2px solid #9ca3af;
+}
+
+.dark .lottery-ball-no-match {
+    background: linear-gradient(145deg, #4b5563, #374151);
+    color: #9ca3af;
+    border-color: #6b7280;
+}
+
+/* Animation for matched numbers */
+@keyframes matchPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+/* Lottery Type Button Selected */
+.lottery-type-btn.active {
+    border-color: #0ea5e9 !important;
+    background-color: #f0f9ff !important;
+}
+
+.dark .lottery-type-btn.active {
+    border-color: #38bdf8 !important;
+    background-color: #0c4a6e !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .lottery-ball {
+        width: 50px;
+        height: 50px;
+        font-size: 16px;
+    }
+    
+    .lottery-ball-number {
+        font-size: 18px;
+    }
+    
+    .lottery-ball-display {
+        width: 45px;
+        height: 45px;
+        font-size: 16px;
+    }
+    
+    .lottery-ball-result {
+        min-width: 50px;
+        min-height: 50px;
+        font-size: 16px;
+    }
+    
+    .lottery-ball-small {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+}
+
+/* Animation for ball entrance */
+@keyframes ballEntrance {
+    from {
+        opacity: 0;
+        transform: scale(0);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.lottery-ball {
+    animation: ballEntrance 0.3s ease-out;
+}
+
+/* Stagger animation for multiple balls */
+.lottery-ball:nth-child(1) { animation-delay: 0.02s; }
+.lottery-ball:nth-child(2) { animation-delay: 0.04s; }
+.lottery-ball:nth-child(3) { animation-delay: 0.06s; }
+.lottery-ball:nth-child(4) { animation-delay: 0.08s; }
+.lottery-ball:nth-child(5) { animation-delay: 0.10s; }
+.lottery-ball:nth-child(6) { animation-delay: 0.12s; }
+.lottery-ball:nth-child(7) { animation-delay: 0.14s; }
+.lottery-ball:nth-child(8) { animation-delay: 0.16s; }
+.lottery-ball:nth-child(9) { animation-delay: 0.18s; }
+.lottery-ball:nth-child(10) { animation-delay: 0.20s; }
+
+/* Hover effect for ball grid */
+#numberGrid:hover .lottery-ball:not(:hover):not(.lottery-ball-selected) {
+    opacity: 0.6;
+}
+
+/* Accessibility - Focus styles */
+.lottery-ball:focus {
+    outline: 3px solid #0ea5e9;
+    outline-offset: 2px;
+}
+
+.dark .lottery-ball:focus {
+    outline-color: #38bdf8;
+}

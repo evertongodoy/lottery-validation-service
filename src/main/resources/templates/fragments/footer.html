@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Footer Fragment -->
+    <footer th:fragment="footer" class="bg-white dark:bg-gray-800 shadow-md mt-16 transition-colors duration-300">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- About Section -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">
+                        <i class="fas fa-dice mr-2 text-primary-600 dark:text-primary-400"></i>
+                        Estatísticas de Loterias
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm">
+                        Plataforma completa para simulação e análise de loterias. 
+                        Acompanhe suas apostas e aumente suas chances de ganhar!
+                    </p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Links Rápidos</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>
+                            <a th:href="@{/web/home}" 
+                               class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                                <i class="fas fa-home mr-2"></i>Home
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="@{/web/simulate}" 
+                               class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                                <i class="fas fa-gamepad mr-2"></i>Simulação
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" 
+                               class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                                <i class="fas fa-question-circle mr-2"></i>Ajuda
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">Contato</h3>
+                    <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <li>
+                            <i class="fas fa-envelope mr-2"></i>
+                            contato@lotterystats.com
+                        </li>
+                        <li>
+                            <i class="fas fa-phone mr-2"></i>
+                            (11) 9999-9999
+                        </li>
+                        <li class="flex space-x-4 mt-4">
+                            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                                <i class="fab fa-facebook-f text-xl"></i>
+                            </a>
+                            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                                <i class="fab fa-twitter text-xl"></i>
+                            </a>
+                            <a href="#" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                                <i class="fab fa-instagram text-xl"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="border-t border-gray-200 dark:border-gray-700 mt-8 pt-6 text-center">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    &copy; <span th:text="${#dates.year(#dates.createNow())}">2026</span> Estatísticas de Loterias. Todos os direitos reservados - Everton Godoy.
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
