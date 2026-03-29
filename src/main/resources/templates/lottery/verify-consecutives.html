@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Verificar Consecutividade</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/lottery-balls.css}">
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300">
+    
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header}"></div>
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        
+        <!-- Page Title -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
+                <i class="fas fa-chart-line text-purple-600 dark:text-purple-400 mr-3"></i>
+                Verificar Consecutividade
+            </h1>
+            <p class="text-lg text-gray-600 dark:text-gray-300">
+                Analise padrões de presença e ausência consecutiva dos números da loteria
+            </p>
+        </div>
+        
+        <!-- Error Message -->
+        <div th:if="${error}" class="max-w-4xl mx-auto mb-6">
+            <div class="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-6 py-4 rounded-xl">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle text-2xl mr-4"></i>
+                    <span th:text="${error}">Erro ao processar verificação</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lottery Type Selection -->
+        <div class="max-w-4xl mx-auto mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                    <i class="fas fa-list-alt mr-3 text-purple-600 dark:text-purple-400"></i>
+                    Escolha o Tipo de Loteria
+                </h2>
+                
+                <form id="consecutiveForm" method="post">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                        <button type="button" onclick="selectLotteryType('LOTOFACIL')" 
+                                id="btn-LOTOFACIL"
+                                class="lottery-type-btn p-6 rounded-xl border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 dark:hover:border-purple-400 transition-all duration-300 text-left">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
+                                        <i class="fas fa-dice-five mr-2 text-purple-600 dark:text-purple-400"></i>
+                                        Lotofácil
+                                    </h3>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                                        25 números disponíveis (1 a 25)
+                                    </p>
+                                </div>
+                                <i class="fas fa-check-circle text-3xl text-green-500 hidden lottery-check"></i>
+                            </div>
+                        </button>
+                        
+                        <button type="button" onclick="selectLotteryType('MEGASENA')" 
+                                id="btn-MEGASENA"
+                                class="lottery-type-btn p-6 rounded-xl border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 dark:hover:border-purple-400 transition-all duration-300 text-left">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">
+                                        <i class="fas fa-gem mr-2 text-accent-600 dark:text-accent-400"></i>
+                                        Mega-Sena
+                                    </h3>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                                        60 números disponíveis (1 a 60)
+                                    </p>
+                                </div>
+                                <i class="fas fa-check-circle text-3xl text-green-500 hidden lottery-check"></i>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" 
+                                id="submitBtn"
+                                class="px-12 py-4 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white text-lg font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                                disabled>
+                            <i class="fas fa-search mr-2"></i>
+                            Verificar Consecutividade
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-6">
+                <h3 class="text-lg font-bold text-purple-800 dark:text-purple-300 mb-3 flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Como Funciona?
+                </h3>
+                <ol class="space-y-2 text-purple-700 dark:text-purple-300 text-sm">
+                    <li><strong>1.</strong> Escolha o tipo de loteria (Lotofácil ou Mega-Sena)</li>
+                    <li><strong>2.</strong> Clique em "Verificar Consecutividade" para analisar os padrões</li>
+                    <li><strong>3.</strong> Veja estatísticas de presença e ausência consecutiva de cada número</li>
+                    <li><strong>4.</strong> Analise os padrões históricos para tomar melhores decisões</li>
+                </ol>
+            </div>
+        </div>
+        
+    </main>
+    
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    
+    <!-- Scripts -->
+    <script th:src="@{/js/theme-toggle.js}"></script>
+    <script th:src="@{/js/menu-mobile.js}"></script>
+    
+    <script>
+        let selectedLotteryType = null;
+        
+        function selectLotteryType(type) {
+            selectedLotteryType = type;
+            
+            // Update UI
+            document.querySelectorAll('.lottery-type-btn').forEach(btn => {
+                btn.classList.remove('border-purple-500', 'bg-purple-50', 'dark:bg-purple-900/20');
+                btn.classList.add('border-gray-300', 'dark:border-gray-600');
+                btn.querySelector('.lottery-check').classList.add('hidden');
+            });
+            
+            const selectedBtn = document.getElementById('btn-' + type);
+            selectedBtn.classList.remove('border-gray-300', 'dark:border-gray-600');
+            selectedBtn.classList.add('border-purple-500', 'bg-purple-50', 'dark:bg-purple-900/20');
+            selectedBtn.querySelector('.lottery-check').classList.remove('hidden');
+            
+            // Enable submit button
+            document.getElementById('submitBtn').disabled = false;
+        }
+        
+        document.getElementById('consecutiveForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!selectedLotteryType) {
+                alert('Por favor, selecione um tipo de loteria primeiro!');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processando...';
+            submitBtn.disabled = true;
+            
+            // Submit the form
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/web/verify-consecutives/' + selectedLotteryType;
+            document.body.appendChild(form);
+            form.submit();
+        });
+    </script>
+    
+</body>
+</html>

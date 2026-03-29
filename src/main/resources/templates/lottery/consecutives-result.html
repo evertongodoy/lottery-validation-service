@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Resultado da Consecutividade</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        .draw-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 2px;
+        }
+        .draw-indicator.present {
+            background-color: #10b981;
+        }
+        .draw-indicator.absent {
+            background-color: #ef4444;
+        }
+        .draws-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .draw-item {
+            display: inline-flex;
+            align-items: center;
+            margin: 4px;
+            padding: 4px 8px;
+            background-color: rgba(0,0,0,0.05);
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+        .dark .draw-item {
+            background-color: rgba(255,255,255,0.05);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300">
+    
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header}"></div>
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-12">
+        
+        <!-- Page Title -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
+                <i class="fas fa-chart-line text-purple-600 dark:text-purple-400 mr-3"></i>
+                Resultado da Consecutividade
+            </h1>
+            <h2 class="text-2xl text-gray-600 dark:text-gray-300">
+                <span th:text="${lotteryType}" class="text-purple-600 dark:text-purple-400 font-bold">LOTOFACIL</span>
+            </h2>
+        </div>
+        
+        <!-- Summary -->
+        <div class="max-w-6xl mx-auto mb-8">
+            <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl shadow-xl p-8 text-white">
+                <div class="text-center">
+                    <i class="fas fa-calculator text-5xl mb-4"></i>
+                    <h2 class="text-3xl font-bold mb-2">
+                        <span th:text="${#lists.size(consecutiveData.consecutiveAverage)}">0</span> Números Analisados
+                    </h2>
+                    <p class="text-lg opacity-90">
+                        Estatísticas completas de presença e ausência consecutiva
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filter and Pagination Controls -->
+        <div class="max-w-6xl mx-auto mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <div class="flex flex-col gap-4">
+                    <!-- Header with status -->
+                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2 flex items-center">
+                                <i class="fas fa-sliders-h mr-2 text-purple-600"></i>
+                                Controles de Visualização
+                            </h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                                Mostrando <span id="currentRangeStart">1</span>-<span id="currentRangeEnd">5</span> 
+                                de <span id="totalNumbers" th:text="${#lists.size(consecutiveData.consecutiveAverage)}">0</span> números
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter Controls -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center space-x-4">
+                            <label for="itemsPerPage" class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                                Números por página:
+                            </label>
+                            <select id="itemsPerPage" 
+                                    class="flex-1 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg font-medium focus:ring-2 focus:ring-purple-500">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5" selected>5</option>
+                            </select>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <label for="specificNumber" class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                                Por número desejado:
+                            </label>
+                            <select id="specificNumber" 
+                                    class="flex-1 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg font-medium focus:ring-2 focus:ring-purple-500">
+                                <option value="">Todos (paginado)</option>
+                                <!-- Options will be populated by JavaScript based on lottery type -->
+                            </select>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <label for="drawNumber" class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                                Por número de sorteio:
+                            </label>
+                            <select id="drawNumber" 
+                                    class="flex-1 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg font-medium focus:ring-2 focus:ring-purple-500">
+                                <option value="">Todos os sorteios</option>
+                                <!-- Options will be populated by JavaScript based on available draws -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Numbers List -->
+        <div class="max-w-6xl mx-auto mb-8" th:if="${consecutiveData != null and #lists.size(consecutiveData.consecutiveAverage) > 0}">
+            
+            <div id="numbersContainer" class="space-y-6">
+                <!-- Numbers will be rendered here by JavaScript, but we provide template data -->
+                <div th:each="stat, iterStat : ${consecutiveData.consecutiveAverage}" 
+                     th:attr="data-index=${iterStat.index}"
+                     class="number-item bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-shadow">
+                    
+                    <!-- Number Header -->
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                                <span th:text="${stat.number}">25</span>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-800 dark:text-white">
+                                    Número <span th:text="${stat.number}">25</span>
+                                </h3>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    Análise completa de padrões
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="text-right">
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Posição</div>
+                            <div class="text-4xl font-bold text-purple-600 dark:text-purple-400">
+                                #<span class="number-position" th:text="${iterStat.index + 1}">1</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistics Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        
+                        <!-- Presence Statistics -->
+                        <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border-2 border-green-200 dark:border-green-800">
+                            <h4 class="text-lg font-bold text-green-800 dark:text-green-300 mb-4 flex items-center">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                Estatísticas de Presença
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-green-700 dark:text-green-400">Média presença consecutiva:</span>
+                                    <span class="font-bold text-green-900 dark:text-green-200" th:text="${#numbers.formatDecimal(stat.consecutivePresentAverage, 1, 2)}">2.68</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-green-700 dark:text-green-400">Máximo presença consecutivas:</span>
+                                    <span class="font-bold text-green-900 dark:text-green-200" th:text="${stat.maxConsecutivePresent}">21</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-green-700 dark:text-green-400">Mínimo presença consecutivas:</span>
+                                    <span class="font-bold text-green-900 dark:text-green-200" th:text="${stat.minConsecutivePresent}">1</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-green-700 dark:text-green-400">Intervalos presentes:</span>
+                                    <span class="font-bold text-green-900 dark:text-green-200" th:text="${stat.presentIntervals}">847</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Absence Statistics -->
+                        <div class="bg-red-50 dark:bg-red-900/20 rounded-xl p-6 border-2 border-red-200 dark:border-red-800">
+                            <h4 class="text-lg font-bold text-red-800 dark:text-red-300 mb-4 flex items-center">
+                                <i class="fas fa-times-circle mr-2"></i>
+                                Estatísticas de Ausência
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-red-700 dark:text-red-400">Média ausência consecutiva:</span>
+                                    <span class="font-bold text-red-900 dark:text-red-200" th:text="${#numbers.formatDecimal(stat.consecutiveAbsentAverage, 1, 2)}">1.63</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-red-700 dark:text-red-400">Máximo ausência consecutivas:</span>
+                                    <span class="font-bold text-red-900 dark:text-red-200" th:text="${stat.maxConsecutiveAbsent}">11</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-red-700 dark:text-red-400">Mínimo de ausência consecutivas:</span>
+                                    <span class="font-bold text-red-900 dark:text-red-200" th:text="${stat.minConsecutiveAbsent}">1</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-red-700 dark:text-red-400">Intervalos ausentes:</span>
+                                    <span class="font-bold text-red-900 dark:text-red-200" th:text="${stat.absentIntervals}">847</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    <!-- Draws Section (Collapsible) -->
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                        <button type="button" 
+                                th:attr="onclick='toggleDraws(' + ${iterStat.index} + ')'"
+                                class="w-full flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                            <div class="flex items-center">
+                                <i class="fas fa-list-ul mr-3 text-purple-600 dark:text-purple-400"></i>
+                                <span class="font-bold text-gray-800 dark:text-white">
+                                    Sorteios (<span th:text="${#lists.size(stat.draws)}">3648</span>)
+                                </span>
+                            </div>
+                            <i class="fas fa-chevron-down toggle-icon transition-transform"></i>
+                        </button>
+                        
+                        <div th:id="'draws-' + ${iterStat.index}" class="draws-content hidden mt-4">
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+                                <div class="mb-4 flex items-center justify-between">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="flex items-center">
+                                            <span class="draw-indicator present mr-2"></span>
+                                            <span class="text-sm text-gray-700 dark:text-gray-300">Presente (P)</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span class="draw-indicator absent mr-2"></span>
+                                            <span class="text-sm text-gray-700 dark:text-gray-300">Ausente (A)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="draws-container">
+                                    <div class="flex flex-wrap">
+                                        <div th:each="draw : ${stat.draws}" class="draw-item">
+                                            <span class="text-xs text-gray-600 dark:text-gray-400 mr-2" th:text="'#' + ${#numbers.formatInteger(draw.lotteryNumber, 4)}">#0001</span>
+                                            <span class="draw-indicator" 
+                                                  th:classappend="${draw.present == 'P'} ? 'present' : 'absent'"
+                                                  th:title="${draw.present == 'P'} ? 'Presente' : 'Ausente'"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Pagination Controls -->
+            <div class="mt-8 flex items-center justify-center space-x-2">
+                <button id="firstPageBtn" 
+                        class="px-4 py-2 bg-purple-200 dark:bg-purple-700 hover:bg-purple-300 dark:hover:bg-purple-600 text-purple-900 dark:text-purple-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-angle-double-left"></i>
+                </button>
+                
+                <button id="prevPageBtn" 
+                        class="px-4 py-2 bg-purple-200 dark:bg-purple-700 hover:bg-purple-300 dark:hover:bg-purple-600 text-purple-900 dark:text-purple-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-angle-left"></i>
+                </button>
+                
+                <div id="paginationNumbers" class="flex items-center space-x-2">
+                    <!-- Page numbers will be inserted here by JavaScript -->
+                </div>
+                
+                <button id="nextPageBtn" 
+                        class="px-4 py-2 bg-purple-200 dark:bg-purple-700 hover:bg-purple-300 dark:hover:bg-purple-600 text-purple-900 dark:text-purple-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-angle-right"></i>
+                </button>
+                
+                <button id="lastPageBtn" 
+                        class="px-4 py-2 bg-purple-200 dark:bg-purple-700 hover:bg-purple-300 dark:hover:bg-purple-600 text-purple-900 dark:text-purple-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-angle-double-right"></i>
+                </button>
+            </div>
+            
+        </div>
+        
+        <!-- No Results -->
+        <div class="max-w-4xl mx-auto" th:if="${consecutiveData == null or #lists.size(consecutiveData.consecutiveAverage) == 0}">
+            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-8 text-center">
+                <i class="fas fa-search text-5xl text-yellow-500 mb-4"></i>
+                <h3 class="text-2xl font-bold text-yellow-800 dark:text-yellow-300 mb-2">
+                    Nenhum Dado Encontrado
+                </h3>
+                <p class="text-yellow-700 dark:text-yellow-400">
+                    Não foi possível obter dados de consecutividade para esta loteria.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Back Button -->
+        <div class="max-w-4xl mx-auto text-center mt-8">
+            <a th:href="@{/web/verify-consecutives}" 
+               class="inline-block px-8 py-4 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Nova Verificação
+            </a>
+        </div>
+        
+    </main>
+    
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    
+    <!-- Scripts -->
+    <script th:src="@{/js/theme-toggle.js}"></script>
+    <script th:src="@{/js/menu-mobile.js}"></script>
+    <script>
+        // Pass lottery type to JavaScript
+        const LOTTERY_TYPE = /*[[${lotteryType}]]*/ 'LOTOFACIL';
+    </script>
+    <script th:src="@{/js/consecutives-pagination.js}"></script>
+    
+</body>
+</html>
