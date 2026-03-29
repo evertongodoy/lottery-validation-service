@@ -19,17 +19,20 @@ import com.lottery.validation.application.ports.input.FindTopLotteryInputPort;
 import com.lottery.validation.application.ports.input.SaveLotteryInputPort;
 import com.lottery.validation.application.ports.input.SendVerifiedUserDrawInputPort;
 import com.lottery.validation.application.ports.input.SimulateLotteryDrawInputPort;
+import com.lottery.validation.application.ports.input.VerifyConsecutivesNumbersInputPort;
 import com.lottery.validation.application.ports.input.VerifyUserDrawInputPort;
 import com.lottery.validation.domain.enums.LotteryType;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.FindLotteryRestMapper;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.FindTopLotteryRestMapper;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.SaveLotteryRestMapper;
+import com.lottery.validation.infrastructure.adapters.input.rest.mappers.VerifyConsecutivesNumbersRestMapper;
 import com.lottery.validation.infrastructure.adapters.input.rest.mappers.VerifyUserDrawWinnerRestMapper;
 import com.lottery.validation.infrastructure.adapters.input.rest.requests.RegisterLotteryRequest;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.FindLotteryResponse;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.FindTopLotteryResponse;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.SaveLotteryResponse;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.SimulateLotteryDrawResponse;
+import com.lottery.validation.infrastructure.adapters.input.rest.responses.VerifyConsecutiveAverageResponse;
 import com.lottery.validation.infrastructure.adapters.input.rest.responses.VerifyUserDrawWinnerResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,10 +52,13 @@ public class LotteryController {
     private final SimulateLotteryDrawInputPort simulateLotteryDrawInputPort;
     private final VerifyUserDrawInputPort verifyUserDrawInputPort;
     private final SendVerifiedUserDrawInputPort sendVerifiedUserDrawInputPort;
+    private final VerifyConsecutivesNumbersInputPort verifyConsecutivesNumbersInputPort;
     private final SaveLotteryRestMapper saveLotteryRestMapper;
     private final FindLotteryRestMapper findLotteryRestMapper;
     private final FindTopLotteryRestMapper findTopLotteryRestMapper;
     private final VerifyUserDrawWinnerRestMapper verifyUserDrawWinnerRestMapper;
+    private final VerifyConsecutivesNumbersRestMapper verifyConsecutivesNumbersRestMapper;
+    
 
     public LotteryController(SaveLotteryInputPort saveLotteryInputPort,
                            FindLotteryInputPort findLotteryInputPort,
@@ -63,7 +69,9 @@ public class LotteryController {
                            SimulateLotteryDrawInputPort simulateLotteryDrawInputPort,
                            VerifyUserDrawInputPort verifyUserDrawInputPort,
                            SendVerifiedUserDrawInputPort sendVerifiedUserDrawInputPort,
-                           VerifyUserDrawWinnerRestMapper verifyUserDrawWinnerRestMapper) {
+                           VerifyUserDrawWinnerRestMapper verifyUserDrawWinnerRestMapper,
+                           VerifyConsecutivesNumbersInputPort verifyConsecutivesNumbersInputPort,
+                           VerifyConsecutivesNumbersRestMapper verifyConsecutivesNumbersRestMapper) {
         this.saveLotteryInputPort = saveLotteryInputPort;
         this.findLotteryInputPort = findLotteryInputPort;
         this.saveLotteryRestMapper = saveLotteryRestMapper;
@@ -74,6 +82,8 @@ public class LotteryController {
         this.verifyUserDrawInputPort = verifyUserDrawInputPort;
         this.sendVerifiedUserDrawInputPort = sendVerifiedUserDrawInputPort;
         this.verifyUserDrawWinnerRestMapper = verifyUserDrawWinnerRestMapper;
+        this.verifyConsecutivesNumbersInputPort = verifyConsecutivesNumbersInputPort;
+        this.verifyConsecutivesNumbersRestMapper = verifyConsecutivesNumbersRestMapper;
     }
 
     @PostMapping("/register")
@@ -155,6 +165,22 @@ public class LotteryController {
         log.info("[sendMessageWinners] Início | PathVariable: lotteryType={}",  lotteryType, lotteryType);
         sendVerifiedUserDrawInputPort.sendVerifiedWinnerDraw(lotteryType);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/get-consecutive-average/lottery-type/{lotteryType}")
+    @Operation(summary = "Get consecutive average", description = "Calculates the average of consecutive present and absent sequences for each number in the lottery type")
+    public ResponseEntity<VerifyConsecutiveAverageResponse> getConsecutiveAverage(@PathVariable LotteryType lotteryType) {
+        log.info("[getConsecutiveAverage] Início | PathVariable: lotteryType={}", lotteryType);
+        var consecutiveNumbersDTO = verifyConsecutivesNumbersInputPort.verifyConsecutives(lotteryType);
+        var response = verifyConsecutivesNumbersRestMapper.toResponse(consecutiveNumbersDTO);
+        
+        // Ordenar por consecutivePresentAverage em ordem decrescente
+        response.getConsecutiveAverage().sort((a, b) -> 
+            Double.compare(b.getConsecutivePresentAverage(), a.getConsecutivePresentAverage())
+        );
+        
+        log.info("[getConsecutiveAverage] Fim | Total de números analisados: {}", response.getConsecutiveAverage().size());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/health")
