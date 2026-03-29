@@ -111,28 +111,28 @@
                             Filtrar Resultados
                         </h3>
                         <p class="text-sm text-blue-700 dark:text-blue-400">
-                            Exiba apenas os jogos que atingiram o número mínimo de acertos para premiação
+                            Exiba apenas os jogos com o número exato de acertos selecionado
                         </p>
                     </div>
                     
                     <div class="flex items-center space-x-4">
                         <label for="minMatches" class="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                            Acertos mínimos:
+                            Faixa de acertos:
                         </label>
                         <select id="minMatches" 
                                 class="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg font-medium focus:ring-2 focus:ring-primary-500">
                             <option value="0">Todos os resultados</option>
                             
                             <!-- Lotofácil Options -->
-                            <option value="11" th:if="${lotteryType.name() == 'LOTOFACIL'}">11+ acertos</option>
-                            <option value="12" th:if="${lotteryType.name() == 'LOTOFACIL'}">12+ acertos</option>
-                            <option value="13" th:if="${lotteryType.name() == 'LOTOFACIL'}">13+ acertos</option>
-                            <option value="14" th:if="${lotteryType.name() == 'LOTOFACIL'}">14+ acertos</option>
+                            <option value="11" th:if="${lotteryType.name() == 'LOTOFACIL'}">11 acertos</option>
+                            <option value="12" th:if="${lotteryType.name() == 'LOTOFACIL'}">12 acertos</option>
+                            <option value="13" th:if="${lotteryType.name() == 'LOTOFACIL'}">13 acertos</option>
+                            <option value="14" th:if="${lotteryType.name() == 'LOTOFACIL'}">14 acertos</option>
                             <option value="15" th:if="${lotteryType.name() == 'LOTOFACIL'}">15 acertos (Prêmio Principal)</option>
                             
                             <!-- Mega-Sena Options -->
-                            <option value="4" th:if="${lotteryType.name() == 'MEGASENA'}">4+ acertos (Quadra)</option>
-                            <option value="5" th:if="${lotteryType.name() == 'MEGASENA'}">5+ acertos (Quina)</option>
+                            <option value="4" th:if="${lotteryType.name() == 'MEGASENA'}">4 acertos (Quadra)</option>
+                            <option value="5" th:if="${lotteryType.name() == 'MEGASENA'}">5 acertos (Quina)</option>
                             <option value="6" th:if="${lotteryType.name() == 'MEGASENA'}">6 acertos (Sena)</option>
                         </select>
                     </div>

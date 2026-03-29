@@ -87,7 +87,7 @@ function getFilteredItems() {
     
     return allItems.filter(item => {
         const matches = parseInt(item.getAttribute('data-matches'));
-        return matches >= minMatches;
+        return matches === minMatches;
     });
 }
 
@@ -246,7 +246,7 @@ function showNoResultsMessage(show) {
                     Nenhum resultado com esse filtro
                 </h3>
                 <p class="text-yellow-700 dark:text-yellow-400">
-                    Tente ajustar o filtro de acertos mínimos para ver mais resultados.
+                    Nenhum sorteio encontrado com essa quantidade exata de acertos. Tente outra faixa.
                 </p>
             `;
             
